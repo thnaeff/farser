@@ -1,6 +1,8 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
+import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
+import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
 /**
@@ -9,7 +11,7 @@ import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
  * @param <T> the type of context
  * @author Mike Funaro
  */
-public class DrgSyntaxTree<T> {
+public class DrgSyntaxTree<T> extends NonTerminal<T> implements Iterable<BooleanExpression<T>> {
 
   private BooleanExpression<T> ast;
 
@@ -21,6 +23,11 @@ public class DrgSyntaxTree<T> {
     this.ast = ast;
   }
 
+  @Override
+  public boolean evaluate(T context) {
+    return this.ast.evaluate(context);
+  }
+
   /**
    * Evaluate an expression that was previously built by the parser.
    *
@@ -29,7 +36,18 @@ public class DrgSyntaxTree<T> {
    *         outcome of the evaluation.
    */
   public ExpressionResult<T> evaluateExpression(T context) {
-    boolean evaluate = this.ast.evaluate(context);
+    boolean evaluate = evaluate(context);
     return new ExpressionResult<>(evaluate, context);
   }
+
+  @Override
+  public LtrExpressionIterator<T> iterator() {
+    return this.ast.iterator();
+  }
+
+  @Override
+  public String print() {
+    return this.ast.print();
+  }
+
 }
