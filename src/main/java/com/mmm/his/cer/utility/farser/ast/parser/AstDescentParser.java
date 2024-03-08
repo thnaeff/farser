@@ -1,6 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
+import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.node.operator.And;
 import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
@@ -75,8 +76,35 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
 
   /**
    * Build the abstract syntax tree.
+   *
+   * @deprecated Call {@link #buildTree()} instead for a non-DRG specific named AST class version
+   *             with the exact same functionality.
    */
-  public AbstractSyntaxTree<C> buildExpressionTree() {
+  @Deprecated
+  public DrgSyntaxTree<C> buildExpressionTree() {
+    BooleanExpression<C> root = expression(null);
+    return new DrgSyntaxTree<>(root);
+  }
+
+  /**
+   * Build the abstract syntax tree from the provided formula/tokens.
+   *
+   * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
+   *
+   * @deprecated Call {@link #buildTree(ListIterator)} instead for a non-DRG specific named AST
+   *             class version with the exact same functionality.
+   */
+  @Deprecated
+  public DrgSyntaxTree<C> buildExpressionTree(ListIterator<L> tokenIterator) {
+    setTokenIterator(tokenIterator);
+    BooleanExpression<C> root = expression(null);
+    return new DrgSyntaxTree<>(root);
+  }
+
+  /**
+   * Build the abstract syntax tree.
+   */
+  public AbstractSyntaxTree<C> buildTree() {
     BooleanExpression<C> root = expression(null);
     return new AbstractSyntaxTree<>(root);
   }
@@ -86,7 +114,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *
    * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
    */
-  public AbstractSyntaxTree<C> buildExpressionTree(ListIterator<L> tokenIterator) {
+  public AbstractSyntaxTree<C> buildTree(ListIterator<L> tokenIterator) {
     setTokenIterator(tokenIterator);
     BooleanExpression<C> root = expression(null);
     return new AbstractSyntaxTree<>(root);
