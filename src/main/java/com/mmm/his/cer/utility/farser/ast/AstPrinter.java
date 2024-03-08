@@ -24,12 +24,12 @@ public final class AstPrinter {
    * @param ast The AST
    * @return The tree representation as string
    */
-  public static String printTree(DrgSyntaxTree<?> ast) {
+  public static String printTree(AbstractSyntaxTree<?> ast) {
     return printTree(ast, AstPrinter::printNodeSimple);
   }
 
 
-  public static <T> String printTree(DrgSyntaxTree<T> ast,
+  public static <T> String printTree(AbstractSyntaxTree<T> ast,
       Function<BooleanExpression<T>, String> printNode) {
     return printTree(ast, (node, next) -> printNode.apply(node));
   }
@@ -44,7 +44,7 @@ public final class AstPrinter {
    *                  See {@link #printNodeSimple(BooleanExpression)} for a simple starting point.
    * @return The tree representation as string
    */
-  public static <T> String printTree(DrgSyntaxTree<T> ast,
+  public static <T> String printTree(AbstractSyntaxTree<T> ast,
       BiFunction<BooleanExpression<T>, AstPrinterContext<T>, String> printNode) {
     StringBuilder sb = new StringBuilder();
     int previousDepth = 0;

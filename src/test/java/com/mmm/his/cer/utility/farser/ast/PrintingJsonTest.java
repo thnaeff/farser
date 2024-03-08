@@ -32,7 +32,7 @@ public class PrintingJsonTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
     NodePrinterJson nodePrinter = new NodePrinterJson();
 

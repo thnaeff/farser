@@ -31,7 +31,7 @@ public class PrintingTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
@@ -60,7 +60,7 @@ public class PrintingTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast, PrintingTest::printNodeWithPeek);
     String[] lines = printed.split(System.lineSeparator());
@@ -92,7 +92,7 @@ public class PrintingTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
-    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
     List<String> mask = Arrays.asList("A", "C");
 
     NodePrinterWithContextData<MaskedContext<String>> nodePrinter =
