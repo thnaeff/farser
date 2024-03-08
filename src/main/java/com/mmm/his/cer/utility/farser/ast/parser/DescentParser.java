@@ -131,7 +131,8 @@ public class DescentParser<T> {
    */
   private BooleanExpression<T> factor(BooleanExpression<T> root) {
     TokenType<?> tokenType = currentToken.getType();
-    // Get common type for generic checking. Ok to return 'null', only used in NPE safe logic.
+    // Get common type for generic checking. Ok to return 'null', it is only used in NPE safe logic
+    // below.
     CommonTokenType commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
       NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
