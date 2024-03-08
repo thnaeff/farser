@@ -123,8 +123,16 @@ public final class AstPrinter {
    * @param node The node to print
    * @return The printed representation
    */
-  public static String printNodeSimple(BooleanExpression<?> node) {
-    return node.print();
+  public static String printNodeSimple(BooleanExpression<?> node, AstPrinterContext<?> context) {
+    if (node == null) {
+      return "";
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(context.prefix);
+    sb.append(node.print());
+    sb.append(System.lineSeparator());
+    return sb.toString();
   }
 
 
