@@ -10,6 +10,7 @@ import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
  *
  * @param <T> the type of context
  * @author Mike Funaro
+ * @author Thomas Naeff
  */
 public class AbstractSyntaxTree<T> extends NonTerminal<T> implements Iterable<BooleanExpression<T>> {
 

@@ -16,10 +16,11 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * Recursive descent parser that will build an Abstract syntax tree from a formula (list of formula
+ * Recursive descent parser that will build an Abstract syntax tree from a formula/script (list of
  * tokens).
  *
  * @author Mike Funaro
+ * @author Thomas Naeff
  *
  * @param <C> The type of the context used when evaluating the AST
  */
