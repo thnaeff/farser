@@ -5,15 +5,37 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
  * boolean expression through recursion.
  *
  * @param <T> The type of context to be used for the terminal node execution.
+ *
  * @author Mike Funaro
  */
-public interface BooleanExpression<T> {
+public interface BooleanExpression<T> extends Iterable<BooleanExpression<T>> {
 
   /**
    * Evaluate an expression returning true or false based on tests against the operands sent in.
    *
    * @param context The context that will be used in the evaluation of the node.
-   * @return true or false.
+   * @return <code>true</code> or <code>false</code>.
    */
   boolean evaluate(T context);
+
+  /**
+   * Returns an iterator over the expression elements.<br>
+   * <br>
+   * For terminal nodes, <code>null</code> should not be returned but an empty iterator can be
+   * returned (<code>return new ExpressionIterator<>(this)</code> - this default implementation).
+   */
+  @Override
+  default LtrExpressionIterator<T> iterator() {
+    return new LtrExpressionIterator<>();
+  }
+
+  /**
+   * Returns a printable representation of the node.
+   *
+   * @return The printable form of this node
+   */
+  default String print() {
+    return toString();
+  }
+
 }
