@@ -9,9 +9,9 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
  *
  * @author a30w4zz
  */
-public class TestLexerToken implements LexerToken<TestToken> {
+public class TestLexerToken<T extends TokenType<?>> implements LexerToken<T> {
 
-  public final TestToken type;
+  public final T type;
   public final String value;
 
   /**
@@ -19,7 +19,7 @@ public class TestLexerToken implements LexerToken<TestToken> {
    *
    * @param type The token type
    */
-  public TestLexerToken(TestToken type) {
+  public TestLexerToken(T type) {
     this.type = type;
     this.value = type.getValue().orElse(null);
 
@@ -31,14 +31,14 @@ public class TestLexerToken implements LexerToken<TestToken> {
    * @param type  The token type
    * @param value The token value
    */
-  public TestLexerToken(TestToken type, String value) {
+  public TestLexerToken(T type, String value) {
     this.type = type;
     this.value = value;
 
   }
 
   @Override
-  public TestToken getType() {
+  public T getType() {
     return type;
   }
 
