@@ -163,7 +163,9 @@ public class TokenTypeLookup {
         CommonTokenType key = commonType.get();
         if (lookupMap.containsKey(key)) {
           throw new FarserException(
-              "Duplicate keys are not allowed. Key '" + key + "' alredy exists for "
+              "Duplicate common token types are not allowed. Common type '"
+                  + key
+                  + "' alredy exists for "
                   + lookupMap.get(key).getClass().getName() + "." + enumConst.name());
         }
         lookupMap.put(key, enumConst);
@@ -243,8 +245,8 @@ public class TokenTypeLookup {
     for (TokenType<?> enumConst : enumClass.getEnumConstants()) {
       Optional<CommonTokenType> commonType = enumConst.getCommonTokenType();
       // Only the ones which are not ATOMs or SPACE
-      if (!commonType.isPresent() || (commonType.get() != CommonTokenType.ATOM
-          && commonType.get() != CommonTokenType.SPACE)) {
+      if (!commonType.isPresent() || ((commonType.get() != CommonTokenType.ATOM)
+          && (commonType.get() != CommonTokenType.SPACE))) {
         Optional<String> value = enumConst.getValue();
         // Only all non-null values
         value.ifPresent(delimiters::add);

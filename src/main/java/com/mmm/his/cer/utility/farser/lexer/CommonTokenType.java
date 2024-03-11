@@ -4,7 +4,9 @@ package com.mmm.his.cer.utility.farser.lexer;
 /**
  * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
  * Some of them are mandatory and have to exist in your own {@link TokenType} implementation, others
- * are not mandatory.
+ * are not mandatory.<br>
+ * These common types are relevant within the Farser library logic. The logic is driven off of these
+ * common types.
  *
  * @author Thomas Naeff
  */
