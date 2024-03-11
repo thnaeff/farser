@@ -2,6 +2,7 @@ package com.mmm.his.cer.utility.farser.lexer.tokentype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.junit.rules.ExpectedException;
  */
 public class SimpleLexerTest {
 
+  private static final TestTokenFactory<TestToken> factory = new TestTokenFactory<>();
+
   @Rule
   public final ExpectedException exception = ExpectedException.none();
 
@@ -23,7 +26,7 @@ public class SimpleLexerTest {
   @Test
   public void testSpaces() throws Exception {
     String input = "anAtom x  afterTwoSpaces";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: " + input);
@@ -92,7 +95,7 @@ public class SimpleLexerTest {
   @Test
   public void testWithMultiCharacterToken() throws Exception {
     String input = "anAtom ### anotherAtom###thirdAtom";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: " + input);
@@ -137,7 +140,7 @@ public class SimpleLexerTest {
   @Test
   public void testWithMultiCharacterWhichContainsASingleCharacterToken() throws Exception {
     String input = "anAtom *!!* anotherAtom*!!*thirdAtom";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: "
@@ -184,7 +187,7 @@ public class SimpleLexerTest {
   @Test
   public void testWithMultiCharacterInMultiCharacterToken() throws Exception {
     String input = "anAtom !! anotherAtom!!thirdAtom";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: "
@@ -231,7 +234,7 @@ public class SimpleLexerTest {
   @Test
   public void testWithSingleCharacterInMultiCharacterToken() throws Exception {
     String input = "anAtom ! anotherAtom!thirdAtom";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: "
@@ -278,7 +281,7 @@ public class SimpleLexerTest {
   @Test
   public void testWithMixedSingleMultiCharacterToken() throws Exception {
     String input = "anAtom ! anotherAtom !! thirdAtom *!!*";
-    List<TestLexerToken> lex = Lexer.lex(TestToken.class, input, new TestTokenFactory());
+    List<TestLexerToken<TestToken>> lex = Lexer.lex(TestToken.class, input, factory);
 
     System.out.println();
     System.out.println("Input: "

@@ -12,9 +12,19 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 public class TestTokenFactory<T extends TokenType<?>>
     implements LexerTokenFactory<TestLexerToken<T>, T> {
 
+  private final boolean skipSpaces;
+
+  public TestTokenFactory() {
+    this.skipSpaces = false;
+  }
+
+  public TestTokenFactory(boolean skipSpaces) {
+    this.skipSpaces = skipSpaces;
+  }
+
   @Override
   public TestLexerToken<T> create(T tokenType, String value) {
-    if (tokenType.getCommonTokenType().orElse(null) == CommonTokenType.SPACE) {
+    if (this.skipSpaces && tokenType.getCommonTokenType().orElse(null) == CommonTokenType.SPACE) {
       // Ignore spaces
       return null;
     }
