@@ -46,8 +46,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   public AstDescentParser(Iterator<L> tokenIterator,
       NodeSupplier<L, C> defaultSupplier,
       Map<String, NodeSupplier<L, C>> suppliers) {
-    this.tokenIterator = tokenIterator;
-    this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
+    setTokenIterator(tokenIterator);
     if (defaultSupplier == null) {
       throw new FarserException(
           "Please provide at least a default supplier argument to "
@@ -69,9 +68,9 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * Set a new tokenIterator so that we can build another AST using the same setup parser. Uses the
    * same {@link NodeSupplier}s which were set when the {@link AstDescentParser} was created.
    */
-  public void setTokenIterator(ListIterator<L> tokenIterator) {
+  public void setTokenIterator(Iterator<L> tokenIterator) {
     this.tokenIterator = tokenIterator;
-    this.currentToken = tokenIterator.next();
+    this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
   }
 
   /**
