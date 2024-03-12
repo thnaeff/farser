@@ -26,6 +26,12 @@ public abstract class NonTerminal<R> implements BooleanExpression<R> {
   }
 
   @Override
+  public String print() {
+    // A default printing behavior. Can be overridden by implementations if needed.
+    return getClass().getSimpleName().toUpperCase();
+  }
+
+  @Override
   public String toString() {
     return "NonTerminal{" + "left=" + left + ", right=" + right + '}';
   }
