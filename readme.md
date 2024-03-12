@@ -252,6 +252,10 @@ which means that walking through the tree can be achieved by retrieving an itera
 evaluation of the formulas where the left-side nodes are visited/evaluated first. When each node 
 is printed as text in iteration order, it produces a "Polish/prefix notation" form of the formula.
 
+The used `LtrExpressionIterator` also implements "peeking" functionality to look at the next 
+element with the `peek()` method without advancing the regular iteration. Additionally, the 
+`LtrExpressionIterator` provides methods which return the current and peeked node "depth".
+
 The formula `A & B | C` is iterated as `"OR" -> "AND"-> "A"-> "B"-> "C"`, which could be 
 organized as a tree structure like this:
 
