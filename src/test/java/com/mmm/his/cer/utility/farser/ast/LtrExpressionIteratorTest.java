@@ -7,12 +7,14 @@ import static org.junit.Assert.assertThrows;
 
 import com.mmm.his.cer.utility.farser.ast.AstTest.StringOperandSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.Test;
@@ -199,7 +201,7 @@ public class LtrExpressionIteratorTest {
     // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
-    LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
+    Iterator<BooleanExpression<MaskedContext<String>>> iter = ast.iterator();
 
     List<String> printed = new ArrayList<String>();
     while (iter.hasNext()) {
