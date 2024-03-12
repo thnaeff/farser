@@ -24,7 +24,7 @@ public class LtrExpressionIteratorTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
-    System.out.println(lexerTokens);
+    // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
@@ -76,6 +76,7 @@ public class LtrExpressionIteratorTest {
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
         new StringOperandSupplier(), Collections.emptyMap());
 
+    // System.out.println(lexerTokens);
     AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
 
     LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
