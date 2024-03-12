@@ -1,5 +1,6 @@
-package com.mmm.his.cer.utility.farser.ast.node.type;
+package com.mmm.his.cer.utility.farser.ast.node;
 
+import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import java.util.Arrays;
 import java.util.Iterator;
 

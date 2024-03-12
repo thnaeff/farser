@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
+import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
+
 /**
  * Interface for each node of the AST to implement. This will allow the evaluation of the entire
  * boolean expression through recursion.

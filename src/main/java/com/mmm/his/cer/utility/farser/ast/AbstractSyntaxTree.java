@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast;
 
+import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
