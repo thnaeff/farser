@@ -24,7 +24,7 @@ public interface BooleanExpression<T> extends Iterable<BooleanExpression<T>> {
    * Returns an iterator over the expression elements.<br>
    * <br>
    * For terminal nodes, <code>null</code> should not be returned but an empty iterator can be
-   * returned (<code>return new ExpressionIterator<>(this)</code> - this default implementation).
+   * returned (<code>return new ExpressionIterator<>()</code> - this default implementation).
    */
   @Override
   default LtrExpressionIterator<T> iterator() {

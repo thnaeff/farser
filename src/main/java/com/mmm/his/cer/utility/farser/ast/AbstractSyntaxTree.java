@@ -31,7 +31,12 @@ public class AbstractSyntaxTree<C> extends NonTerminal<C> {
 
   @Override
   public LtrExpressionIterator<C> iterator() {
-    return this.ast.iterator();
+    return new LtrExpressionIterator<>(ast);
+  }
+
+  @Override
+  public String print() {
+    return this.ast.print();
   }
 
   /**

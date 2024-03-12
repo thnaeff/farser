@@ -50,7 +50,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
   public int getCurrentDepth() {
     // If peeked, do not return the depth of the latest (peeked) element. Return the depth of the
     // one before.
-    if (peeked != null) {
+    if (depthBeforePeek != null) {
       return depthBeforePeek;
     }
 
@@ -113,7 +113,7 @@ public class LtrExpressionIterator<C> implements Iterator<BooleanExpression<C>> 
    * @return The next element in the iteration
    */
   public BooleanExpression<C> peek() {
-    // Only re-peek if not already peeked.
+    // Only peek if not already peeked.
     if (peeked == null) {
       depthBeforePeek = getCurrentDepthInternal();
       peeked = nextInternal();
