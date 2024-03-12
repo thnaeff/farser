@@ -7,24 +7,24 @@ import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 /**
  * Class that wraps a {@link BooleanExpression} and provides methods to evaluate it.
  *
- * @param <T> the type of context
+ * @param <C> the type of context
  * @author Mike Funaro
  * @author Thomas Naeff
  */
-public class AbstractSyntaxTree<T> extends NonTerminal<T> {
+public class AbstractSyntaxTree<C> extends NonTerminal<C> {
 
-  private BooleanExpression<T> ast;
+  private BooleanExpression<C> ast;
 
-  public AbstractSyntaxTree(BooleanExpression<T> ast) {
+  public AbstractSyntaxTree(BooleanExpression<C> ast) {
     this.ast = ast;
   }
 
-  public void setAst(BooleanExpression<T> ast) {
+  public void setAst(BooleanExpression<C> ast) {
     this.ast = ast;
   }
 
   @Override
-  public boolean evaluate(T context) {
+  public boolean evaluate(C context) {
     return this.ast.evaluate(context);
   }
 
@@ -35,7 +35,7 @@ public class AbstractSyntaxTree<T> extends NonTerminal<T> {
    * @return {@link ExpressionResult} ExpressionResult object which will have the data about the
    *         outcome of the evaluation.
    */
-  public ExpressionResult<T> evaluateExpression(T context) {
+  public ExpressionResult<C> evaluateExpression(C context) {
     boolean evaluate = evaluate(context);
     return new ExpressionResult<>(evaluate, context);
   }

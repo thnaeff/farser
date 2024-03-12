@@ -23,6 +23,8 @@ import java.util.Map;
  * @author Mike Funaro
  * @author Thomas Naeff
  *
+ * @param <L> The type of the token container
+ * @param <T> The type of the token type (enum)
  * @param <C> The type of the context used when evaluating the AST
  */
 public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C> {

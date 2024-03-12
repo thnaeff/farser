@@ -12,13 +12,13 @@ import java.util.Map;
  *
  * @author Mike Funaro
  *
- * @param <T> The type of the context used when evaluating the AST
+ * @param <C> The type of the context used in terminal nodes when evaluating the AST
  */
-public class DescentParser<T> extends AstDescentParser<DrgLexerToken, DrgFormulaToken, T> {
+public class DescentParser<C> extends AstDescentParser<DrgLexerToken, DrgFormulaToken, C> {
 
   public DescentParser(Iterator<DrgLexerToken> tokenIterator,
-      NodeSupplier<DrgLexerToken, T> defaultSupplier,
-      Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
+      NodeSupplier<DrgLexerToken, C> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
     super(tokenIterator, defaultSupplier, suppliers);
   }
 
