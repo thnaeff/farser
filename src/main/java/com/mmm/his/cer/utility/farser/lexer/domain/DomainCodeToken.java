@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer.domain;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -28,12 +30,12 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Left parenthesis.
    */
-  LPAREN("(", CommonTokenType.LPAREN),
+  LPAREN("(", AstTokenFlag.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")", CommonTokenType.RPAREN),
+  RPAREN(")", AstTokenFlag.RPAREN),
 
   /**
    * Assigning a value to a variable.
@@ -53,17 +55,17 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Logical AND.
    */
-  AND("and", CommonTokenType.AND),
+  AND("and", AstTokenFlag.AND),
 
   /**
    * Logical OR.
    */
-  OR("or", CommonTokenType.OR),
+  OR("or", AstTokenFlag.OR),
 
   /**
    * Logical NOT.
    */
-  NOT("not", CommonTokenType.NOT),
+  NOT("not", AstTokenFlag.NOT),
 
   /**
    * A comma separating multiple function parameters.
@@ -91,7 +93,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   POINTER("->");
 
   private final String value;
-  private final CommonTokenType commonType;
+  private final CommonTokenFlag commonType;
 
   /**
    * A new token type.
@@ -99,7 +101,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
    * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  DomainCodeToken(String value, CommonTokenType commonType) {
+  DomainCodeToken(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
 
@@ -121,7 +123,7 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   }
 
   @Override
-  public Optional<CommonTokenType> getCommonTokenType() {
+  public Optional<CommonTokenFlag> getCommonTokenType() {
     return Optional.ofNullable(commonType);
   }
 

@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstSide;
 
 /**
  * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
@@ -8,8 +10,7 @@ package com.mmm.his.cer.utility.farser.lexer;
  *
  * @author Thomas Naeff
  */
-public enum CommonTokenType {
-
+public enum CommonTokenType implements CommonTokenFlag {
 
   /**
    * An atom token is the content which does not match any other token (e.g. all the characters in
@@ -31,32 +32,7 @@ public enum CommonTokenType {
    * readability.<br />
    * See {@link #SPACE_PATTERN} for the pattern used to match this token.
    */
-  SPACE(true),
-
-  /**
-   * A left parenthesis "(".
-   */
-  LPAREN(false),
-
-  /**
-   * A right parenthesis ")".
-   */
-  RPAREN(false),
-
-  /**
-   * A negation/not.
-   */
-  NOT(false),
-
-  /**
-   * An <code>AND</code> operator.
-   */
-  AND(false),
-
-  /**
-   * An <code>OR</code> operator.
-   */
-  OR(false);
+  SPACE(true);
 
   /**
    * One or more spaces in a non-capturing group. <br />
@@ -66,13 +42,24 @@ public enum CommonTokenType {
   public static final String SPACE_PATTERN = "(?: )+";
 
   private final boolean mandatory;
+  private final AstSide side;
+
+  CommonTokenType(boolean mandatory, AstSide side) {
+    this.mandatory = mandatory;
+    this.side = side;
+  }
 
   CommonTokenType(boolean mandatory) {
     this.mandatory = mandatory;
+    this.side = null;
   }
 
   public boolean isMandatory() {
     return mandatory;
+  }
+
+  public AstSide getSide() {
+    return side;
   }
 
 }

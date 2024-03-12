@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer.drg;
 
+import com.mmm.his.cer.utility.farser.CommonTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -28,30 +30,30 @@ public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
   /**
    * Left parenthesis.
    */
-  LPAREN("(", CommonTokenType.LPAREN),
+  LPAREN("(", AstTokenFlag.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")", CommonTokenType.RPAREN),
+  RPAREN(")", AstTokenFlag.RPAREN),
 
   /**
    * Logical AND.
    */
-  AND("&", CommonTokenType.AND),
+  AND("&", AstTokenFlag.AND),
 
   /**
    * Logical OR.
    */
-  OR("|", CommonTokenType.OR),
+  OR("|", AstTokenFlag.OR),
 
   /**
    * Logical NOT.
    */
-  NOT("~", CommonTokenType.NOT);
+  NOT("~", AstTokenFlag.NOT);
 
   private final String value;
-  private final CommonTokenType commonType;
+  private final CommonTokenFlag commonType;
 
   /**
    * A new token type.
@@ -59,7 +61,7 @@ public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
    * @param value      The token value, or <code>null</code> if not used
    * @param commonType The common token type, or <code>null</code> if not needed
    */
-  DrgFormulaToken(String value, CommonTokenType commonType) {
+  DrgFormulaToken(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
 
@@ -81,7 +83,7 @@ public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
   }
 
   @Override
-  public Optional<CommonTokenType> getCommonTokenType() {
+  public Optional<CommonTokenFlag> getCommonTokenType() {
     return Optional.ofNullable(commonType);
   }
 
