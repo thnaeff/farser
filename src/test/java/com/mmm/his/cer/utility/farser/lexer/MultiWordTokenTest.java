@@ -12,7 +12,7 @@ import org.junit.Test;
 public class MultiWordTokenTest {
 
   private static final LexerTokenFactory<TestLexerToken<MultiWordTestToken>, MultiWordTestToken> factory =
-      new TestTokenFactory<>();
+      new TestTokenFactory<>(true);
 
   @Test
   public void testMixedOrdersOfMultiAndSingleWords() throws Exception {

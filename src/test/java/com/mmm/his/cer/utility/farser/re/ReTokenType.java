@@ -15,16 +15,17 @@ public enum ReTokenType implements TokenType<ReTokenType> {
   IF("IF"),
   THEN("THEN"),
   ELSE("ELSE"),
-  END("END"),
+  ELSEIF("ELSE IF"),
+  ENDIF("ENDIF"),
 
   GT(">"),
   LT("<"),
   EQUAL("="),
   AND("&", CommonTokenType.AND),
-  OR("|", CommonTokenType.OR);
+  OR("|", CommonTokenType.OR),
 
-  // IN("IN"),
-  // IN_TABLE("IN TABLE");
+  IN("IN"),
+  IN_TABLE("IN TABLE");
 
   private final String value;
   private final CommonTokenType commonType;

@@ -35,6 +35,9 @@ public enum CommonTokenType {
    */
   SPACE(true),
 
+  // TODO The common tokens below are irrelevant for lexing. These are only needed for the AST.
+  // Move them to a common AST type enum. Maybe all can implement a common-type interface.
+
   /**
    * A left parenthesis "(".
    */

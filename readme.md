@@ -2,7 +2,7 @@
 
 Farser is a parsing library centered around DRG formulas created by 3M HIS Clinical and Economic 
 Research. A DRG formula can be thought of as a simple set of boolean logic that is applied to a 
-"mask". 
+"mask" (a list of string keys which evaluate to true when they exist or false when they not exist). 
 
 There are two main components to Farser
 
@@ -70,6 +70,15 @@ Lex with `DrgFormulaLexer.lex`.
 In addition to splitting a DRG formula into tokens, `DrgLexerToken` also supports a prefix for any ATOM tokens.
 If it finds a string separated by a colon ":" it splits this into a value, and a
 prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
+
+
+The `TokenFactory`is where you can decide which tokens to actually use and which ones to skip.
+
+Defined tokens can contain multiple works (e.g. "IN TABLE") and can also be mixed with the same 
+words as individual token (e.g. "IN" and "TABLE" as additional separate tokens). The lexer takes 
+care of favoring the "best match" (longest substring match), the order of the elements in the token 
+enum does not matter.
+
 
 ---
 
