@@ -71,6 +71,7 @@ In addition to splitting a DRG formula into tokens, `DrgLexerToken` also support
 If it finds a string separated by a colon ":" it splits this into a value, and a
 prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
 
+To implement your own tokens and lexer, see ["Implement your own Lexer"](implementYourOwnLexer.md).
 
 The `TokenFactory`is where you can decide which tokens to actually use and which ones to skip.
 
