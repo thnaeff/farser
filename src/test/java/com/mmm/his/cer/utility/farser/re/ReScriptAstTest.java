@@ -7,21 +7,23 @@ import com.mmm.his.cer.utility.farser.ast.node.type.CompositeTokenSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.lexer.Lexer;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.Test;
 
 public class ReScriptAstTest {
 
   private static final ReTokenFactory factory = new ReTokenFactory();
-  private static final Map<String, NodeSupplier<ReToken, ReAstContext>> tokenSpecificSuppliers =
-      new HashMap<>();
   private static final NodeSupplier<ReToken, ReAstContext> defaultNodeSupplier =
       new DefaultNodeSupplier();
   private static final CompositeTokenSupplier<ReToken, ReTokenType> compositeTokenSupplier =
       new ReCompositeTokenSupplier();
+
+  private static final ReIfElseTokenFactory factoryIfElse = new ReIfElseTokenFactory();
+  private static final NodeSupplier<ReIfElseToken, ReAstContext> defaultNodeSupplierIfElse =
+      new DefaultIfElseNodeSupplier();
+
 
   @Test
   public void simpleTwoExpressionsWithAnd() throws Exception {
@@ -33,8 +35,28 @@ public class ReScriptAstTest {
     System.out.println(tokensAsString);
 
     AstDescentParser<ReToken, ReTokenType, ReAstContext> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, tokenSpecificSuppliers);
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, Collections.emptyMap());
     parser.enableCompositeExpressions(compositeTokenSupplier);
+    AbstractSyntaxTree<ReAstContext> ast = parser.buildTree();
+
+    String printed = AstPrinter.printTree(ast);
+    System.out.println(printed);
+
+  }
+
+  @Test
+  public void twoExpressionsWithIfThenElseAndResult() throws Exception {
+    String input = "IF A > 5 & B = 2 THEN RESULT = 1 ELSE RESULT = 2";
+    List<ReIfElseToken> tokens = Lexer.lex(ReIfElseTokenType.class, input, factoryIfElse);
+
+    List<String> tokensAsString =
+        tokens.stream().map(ReIfElseToken::toString).collect(Collectors.toList());
+    System.out.println(tokensAsString);
+
+    AstDescentParser<ReIfElseToken, ReIfElseTokenType, ReAstContext> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplierIfElse,
+            Collections.emptyMap());
+    // parser.enableCompositeExpressions(compositeTokenSupplier);
     AbstractSyntaxTree<ReAstContext> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast);
@@ -49,7 +71,7 @@ public class ReScriptAstTest {
     List<ReToken> tokens = Lexer.lex(ReTokenType.class, input, factory);
 
     AstDescentParser<ReToken, ReTokenType, ReAstContext> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, tokenSpecificSuppliers);
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, Collections.emptyMap());
     AbstractSyntaxTree<ReAstContext> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast);
@@ -66,7 +88,7 @@ public class ReScriptAstTest {
     List<ReToken> tokens = Lexer.lex(ReTokenType.class, input, factory);
 
     AstDescentParser<ReToken, ReTokenType, ReAstContext> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, tokenSpecificSuppliers);
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, Collections.emptyMap());
     AbstractSyntaxTree<ReAstContext> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast);
@@ -83,7 +105,7 @@ public class ReScriptAstTest {
     List<ReToken> tokens = Lexer.lex(ReTokenType.class, input, factory);
 
     AstDescentParser<ReToken, ReTokenType, ReAstContext> parser =
-        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, tokenSpecificSuppliers);
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier, Collections.emptyMap());
     AbstractSyntaxTree<ReAstContext> ast = parser.buildTree();
 
     String printed = AstPrinter.printTree(ast);
@@ -108,7 +130,7 @@ public class ReScriptAstTest {
    *
    */
   public static class ReCompositeTokenSupplier
-  implements CompositeTokenSupplier<ReToken, ReTokenType> {
+      implements CompositeTokenSupplier<ReToken, ReTokenType> {
 
     @Override
     public ReToken createToken(ReToken leftOperand, ReToken operator, ReToken rightOperand) {
@@ -130,6 +152,40 @@ public class ReScriptAstTest {
 
       return new BooleanExpression<ReScriptAstTest.ReAstContext>() {
         private ReToken token = inToken;
+
+        @Override
+        public boolean evaluate(ReAstContext context) {
+          // TODO something else - more logic
+          return true;
+        }
+
+        @Override
+        public String print() {
+          return token.value;
+        }
+
+        @Override
+        public String toString() {
+          return token.value;
+        }
+      };
+    }
+  }
+  /**********************************************************************************************************
+   *
+   *
+   * @author Thomas Naeff
+   *
+   */
+  public static class DefaultIfElseNodeSupplier
+      implements NodeSupplier<ReIfElseToken, ReAstContext> {
+
+    @Override
+    public BooleanExpression<ReAstContext> createNode(final ReIfElseToken inToken) {
+
+      return new BooleanExpression<ReScriptAstTest.ReAstContext>() {
+        private ReIfElseToken token = inToken;
+
         @Override
         public boolean evaluate(ReAstContext context) {
           // TODO something else - more logic
