@@ -1,8 +1,12 @@
 # Implement your own Lexer
 
+These 4 steps show how to implement custom tokens to lex formulas in any format (e.g. different operators).
+
+
 ## 1. Implement a TokenType
 
-The tokens of a formula/script which are recognized as specific type. 
+The `TokenType` specifies tokens of a formula which are recognized as an "important" type 
+(a symbol for example which later needs to get accessed to further process the formula). 
 The `ATOM` token is a special type: Anything that is not recognized will result in this type.
 
 The `SPACE` type is a "convenience type". It simply allows filtering out spaces from the 
@@ -67,9 +71,11 @@ public enum MyOwnTokenType implements TokenType<MyOwnTokenType> {
 ## 2. Implement a LexerToken
 
 This class represents an instance (a container) of each token - with *type* and *value* of the token. 
+A list of `LexerToken` is produced by the lexer.
+
 The *value* in this token class is generally the same as the value of the `TokenType` enum. Only 
-for `ATOM` tokens the value will be something different. For `ATOM` tokens, the *value* will be 
-whatever the value from the formula/script is.
+for `ATOM` tokens the value will be something different - the *value* will be whatever the value 
+from the formula is.
 
 Depending on the `LexerTokenFactory` implementation, this token class can also contain other 
 information. The `LexerTokenFactory` can produce any `LexerToken` needed for your purpose.
