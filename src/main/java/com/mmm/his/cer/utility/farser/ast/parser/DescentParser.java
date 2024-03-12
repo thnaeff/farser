@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Recursive descent parser that will build an Abstract syntax tree from a DRG formula (list of
- * {@link DrgLexerToken} formula tokens).
+ * Recursive descent parser that will build an Abstract syntax tree from <b>a DRG formula</b> (list
+ * of {@link DrgLexerToken} formula tokens).<br>
+ * This implementation simply extends {@link AstDescentParser}, with DRG-specific token types
+ * defined.
  *
  * @author Mike Funaro
  *

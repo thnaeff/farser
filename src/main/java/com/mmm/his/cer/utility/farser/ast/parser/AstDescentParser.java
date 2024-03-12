@@ -17,8 +17,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * Recursive descent parser that will build an Abstract syntax tree from a formula/script (list of
- * tokens).
+ * Recursive descent parser that will build an Abstract syntax tree from a formula (list of tokens).
  *
  * @author Mike Funaro
  * @author Thomas Naeff
@@ -49,6 +48,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       NodeSupplier<L, C> defaultSupplier,
       Map<String, NodeSupplier<L, C>> suppliers) {
     setTokenIterator(tokenIterator);
+
     if (defaultSupplier == null) {
       throw new FarserException(
           "Please provide at least a default supplier argument to "
@@ -59,11 +59,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
 
     // If there is no map, instantiate new map to avoid NPEs. If nothing is in the map the
     // defaultSupplier takes over.
-    if (suppliers == null) {
-      this.suppliers = Collections.emptyMap();
-    } else {
-      this.suppliers = suppliers;
-    }
+    this.suppliers = suppliers == null ? Collections.emptyMap() : suppliers;
   }
 
   /**
@@ -72,6 +68,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   public void setTokenIterator(Iterator<L> tokenIterator) {
     this.tokenIterator = tokenIterator;
+    // Position at first token
     this.currentToken = tokenIterator != null ? tokenIterator.next() : null;
   }
 
@@ -111,7 +108,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   }
 
   /**
-   * Build the abstract syntax tree from the provided formula/tokens.
+   * Build the abstract syntax tree from the provided formula.
    *
    * @param tokenIterator list of tokens to parse into the Abstract syntax tree.
    */
@@ -154,7 +151,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   }
 
   /**
-   * Factor out a single the operands.
+   * Factor out a single operand.
    */
   private BooleanExpression<C> factor(BooleanExpression<C> root) {
     TokenType<?> tokenType = currentToken.getType();
@@ -189,6 +186,10 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param type the type of the token to eat.
    */
   private void eat(CommonTokenType type) {
+    // TODO determine if token type checking is needed. Why only advance when token type matches?
+    // The 'eat' call seems to always get called from within an if/while anyways where the type is
+    // already known. Except for one single case 'eat(CommonTokenType.RPAREN)' where the RPAREN is
+    // assumed.
     if (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
     }

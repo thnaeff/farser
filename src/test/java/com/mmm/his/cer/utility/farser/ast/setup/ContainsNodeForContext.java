@@ -19,5 +19,4 @@ public class ContainsNodeForContext<T> implements BooleanExpression<MaskedContex
     }
     return false;
   }
-
 }
