@@ -8,7 +8,7 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
  *
  * @author Mike Funaro
  */
-public interface BooleanExpression<T> extends Iterable<BooleanExpression<T>> {
+public interface BooleanExpression<T> {
 
   /**
    * Evaluate an expression returning true or false based on tests against the operands sent in.
@@ -17,25 +17,5 @@ public interface BooleanExpression<T> extends Iterable<BooleanExpression<T>> {
    * @return <code>true</code> or <code>false</code>.
    */
   boolean evaluate(T context);
-
-  /**
-   * Returns an iterator over the expression elements.<br>
-   * <br>
-   * For terminal nodes, <code>null</code> should not be returned but an empty iterator can be
-   * returned (<code>return new ExpressionIterator<>(this)</code> - this default implementation).
-   */
-  @Override
-  default LtrExpressionIterator<T> iterator() {
-    return new LtrExpressionIterator<>();
-  }
-
-  /**
-   * Returns a printable representation of the node.
-   *
-   * @return The printable form of this node
-   */
-  default String print() {
-    return toString();
-  }
 
 }

@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import com.mmm.his.cer.utility.farser.ast.node.type.LtrExpressionIterator;
 import java.util.Collection;
 
 /**
@@ -22,17 +21,6 @@ public class ContainsNode<C extends Collection<A>, A> implements BooleanExpressi
   @Override
   public boolean evaluate(C context) {
     return context.contains(this.value);
-  }
-
-  @Override
-  public LtrExpressionIterator<C> iterator() {
-    // Terminal node. Nothing to iterate over further.
-    return new LtrExpressionIterator<>();
-  }
-
-  @Override
-  public String print() {
-    return String.valueOf(value);
   }
 
   @Override
