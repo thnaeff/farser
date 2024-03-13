@@ -8,7 +8,9 @@ import com.mmm.his.cer.utility.farser.lexer.TokenType;
 import java.util.Optional;
 
 /**
- * All recognized types of tokens that we need to be concerned with when lexing a string.
+ * All recognized types of tokens that we need to be concerned with when lexing a <b>HIS domain
+ * code</b> formula string. This token enum also includes configuration types (flags) for building
+ * an AST.
  *
  * @author Mike Funaro
  */
