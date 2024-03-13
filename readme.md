@@ -313,6 +313,9 @@ function provided to the `AbstractSyntaxTreePrinter.printTree` call.
 The function can then be used to print additional (context) information, 
 evaluate each node and show the result, add structure symbols to the
 output (e.g. JSON symbols) and so on.
+The printer context `AstPrinterContext` contains information like 
+peek (looking at the next element and depth), the indentation prefix 
+string to use and the "depth direction" of the current and next node.
 
 
 #### Abstract Syntax Tree Examples
