@@ -12,11 +12,9 @@ import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.Test;
 
 /**
@@ -61,10 +59,10 @@ public class PrintingJsonTest {
         "",
         "}"
     };
-    System.out.println("=== expected ===");
-    System.out.println(Arrays.stream(expected).collect(Collectors.joining(System.lineSeparator())));
-    System.out.println("=== actual ===");
-    System.out.println(printed);
+    // System.out.println("=== expected ===");
+    // System.out.println(Arrays.stream(expected).collect(Collectors.joining(System.lineSeparator())));
+    // System.out.println("=== actual ===");
+    // System.out.println(printed);
     assertThat(lines, is(expected));
 
   }
