@@ -124,7 +124,7 @@ public class PrintingTest {
         "02  AND next=E",
         "03    E next=F",
         "03    F next=NONE",
-        "03    ",
+        "03    ", // Including the "closing" structure of each node
         "02  ",
         "01"
     }));
