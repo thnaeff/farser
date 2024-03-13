@@ -69,7 +69,8 @@ public class PrintingJsonTest {
 
 
   /********************************************************************************************************
-   *
+   * A very rudimentary implementation to print the formula as JSON. This was just implemented to
+   * get it to work and see if it can be possible. A lot in this code is not very nice :)
    *
    * @author Thomas Naeff
    *
