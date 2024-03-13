@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer.domain;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
-import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -30,12 +30,12 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Left parenthesis.
    */
-  LPAREN("(", AstTokenFlag.LPAREN),
+  LPAREN("(", AstCommonTokenType.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")", AstTokenFlag.RPAREN),
+  RPAREN(")", AstCommonTokenType.RPAREN),
 
   /**
    * Assigning a value to a variable.
@@ -55,17 +55,17 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Logical AND.
    */
-  AND("and", AstTokenFlag.AND),
+  AND("and", AstCommonTokenType.AND),
 
   /**
    * Logical OR.
    */
-  OR("or", AstTokenFlag.OR),
+  OR("or", AstCommonTokenType.OR),
 
   /**
    * Logical NOT.
    */
-  NOT("not", AstTokenFlag.NOT),
+  NOT("not", AstCommonTokenType.NOT),
 
   /**
    * A comma separating multiple function parameters.

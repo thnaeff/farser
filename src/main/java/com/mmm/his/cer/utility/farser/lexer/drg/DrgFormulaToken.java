@@ -1,7 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
-import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
@@ -30,27 +30,27 @@ public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
   /**
    * Left parenthesis.
    */
-  LPAREN("(", AstTokenFlag.LPAREN),
+  LPAREN("(", AstCommonTokenType.LPAREN),
 
   /**
    * Right parenthesis.
    */
-  RPAREN(")", AstTokenFlag.RPAREN),
+  RPAREN(")", AstCommonTokenType.RPAREN),
 
   /**
    * Logical AND.
    */
-  AND("&", AstTokenFlag.AND),
+  AND("&", AstCommonTokenType.AND),
 
   /**
    * Logical OR.
    */
-  OR("|", AstTokenFlag.OR),
+  OR("|", AstCommonTokenType.OR),
 
   /**
    * Logical NOT.
    */
-  NOT("~", AstTokenFlag.NOT);
+  NOT("~", AstCommonTokenType.NOT);
 
   private final String value;
   private final CommonTokenFlag commonType;

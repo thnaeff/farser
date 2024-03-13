@@ -1,6 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
-import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.node.operator.And;
 import com.mmm.his.cer.utility.farser.ast.node.operator.Not;
 import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
@@ -31,8 +31,8 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
   BooleanExpression<C> createNode(L token);
 
   default NonTerminal<C> createNonTerminalNode(L token) {
-    AstTokenFlag type =
-        (AstTokenFlag) token.getCommonType()
+    AstCommonTokenType type =
+        (AstCommonTokenType) token.getCommonType()
             .orElseThrow(() -> new UnsupportedOperationException(
                 "The non-terminal node supplier can only create nodes with a "
                     + CommonTokenType.class.getSimpleName()));

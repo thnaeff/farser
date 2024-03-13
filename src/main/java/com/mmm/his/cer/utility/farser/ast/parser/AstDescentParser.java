@@ -3,7 +3,7 @@ package com.mmm.his.cer.utility.farser.ast.parser;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.AstSide;
-import com.mmm.his.cer.utility.farser.ast.AstTokenFlag;
+import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
@@ -156,7 +156,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   private BooleanExpression<C> expression(BooleanExpression<C> root) {
     root = term(root);
-    while (AstTokenFlag.isSide(currentToken.getType().getCommonTokenType().orElse(null),
+    while (AstCommonTokenType.isSide(currentToken.getType().getCommonTokenType().orElse(null),
         AstSide.LEFT)) {
       NonTerminal<C> or = createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'OR'
@@ -173,7 +173,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   private BooleanExpression<C> term(BooleanExpression<C> root) {
     root = factor(root);
-    while (AstTokenFlag.isSide(currentToken.getType().getCommonTokenType().orElse(null),
+    while (AstCommonTokenType.isSide(currentToken.getType().getCommonTokenType().orElse(null),
         AstSide.RIGHT)) {
       NonTerminal<C> and = createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'AND'
@@ -196,13 +196,13 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     if (commonType == CommonTokenType.ATOM) {
       root = createTerminalNode(currentToken);
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
-    } else if (commonType == AstTokenFlag.LPAREN) {
-      this.eat(AstTokenFlag.LPAREN); // Move iterator if 'LPAREN'
+    } else if (commonType == AstCommonTokenType.LPAREN) {
+      this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
       root = this.expression(root);
-      this.eat(AstTokenFlag.RPAREN);
-    } else if (commonType == AstTokenFlag.NOT) {
+      this.eat(AstCommonTokenType.RPAREN);
+    } else if (commonType == AstCommonTokenType.NOT) {
       NonTerminal<C> not = createNonTerminalNode(currentToken);
-      this.eat(AstTokenFlag.NOT); // Move iterator if 'NOT'
+      this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
       root = factor(root);
       not.setLeft(root);
       root = not;

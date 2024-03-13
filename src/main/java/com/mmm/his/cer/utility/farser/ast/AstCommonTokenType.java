@@ -3,22 +3,22 @@ package com.mmm.his.cer.utility.farser.ast;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.Optional;
 
-public enum AstTokenFlag implements CommonTokenFlag {
+public enum AstCommonTokenType implements CommonTokenFlag {
 
   /**
    * A left parenthesis "(".
    */
-  LPAREN(),
+  LPAREN,
 
   /**
    * A right parenthesis ")".
    */
-  RPAREN(),
+  RPAREN,
 
   /**
    * A negation/not.
    */
-  NOT(),
+  NOT,
 
   /**
    * An <code>AND</code> operator.
@@ -32,7 +32,7 @@ public enum AstTokenFlag implements CommonTokenFlag {
 
   private final AstSide side;
 
-  AstTokenFlag(AstSide side) {
+  AstCommonTokenType(AstSide side) {
     this.side = side;
   }
 
@@ -41,13 +41,13 @@ public enum AstTokenFlag implements CommonTokenFlag {
   }
 
   public static boolean isSide(CommonTokenFlag flag, AstSide side) {
-    if (!(flag instanceof AstTokenFlag)) {
+    if (!(flag instanceof AstCommonTokenType)) {
       return false;
     }
-    return ((AstTokenFlag) flag).isSide(side);
+    return ((AstCommonTokenType) flag).isSide(side);
   }
 
-  AstTokenFlag() {
+  AstCommonTokenType() {
     this.side = null;
   }
 
