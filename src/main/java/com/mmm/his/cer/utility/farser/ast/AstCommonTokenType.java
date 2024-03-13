@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
-import java.util.Optional;
 
 public enum AstCommonTokenType implements CommonTokenFlag {
 
@@ -21,38 +20,13 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
-   * An <code>AND</code> operator.
+   * A left-side assignment (e.g. <code>OR</code> operator).
    */
-  AND(AstSide.RIGHT),
+  LEFT,
 
   /**
-   * An <code>OR</code> operator.
+   * A right-side assignment (e.g. <code>AND</code> operator).
    */
-  OR(AstSide.LEFT);
-
-  private final AstSide side;
-
-  AstCommonTokenType(AstSide side) {
-    this.side = side;
-  }
-
-  public boolean isSide(AstSide side) {
-    return this.side == null ? false : this.side == side;
-  }
-
-  public static boolean isSide(CommonTokenFlag flag, AstSide side) {
-    if (!(flag instanceof AstCommonTokenType)) {
-      return false;
-    }
-    return ((AstCommonTokenType) flag).isSide(side);
-  }
-
-  AstCommonTokenType() {
-    this.side = null;
-  }
-
-  public Optional<AstSide> getSide() {
-    return Optional.of(side);
-  }
+  RIGHT;
 
 }

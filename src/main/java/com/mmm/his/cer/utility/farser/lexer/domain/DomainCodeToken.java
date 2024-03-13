@@ -55,12 +55,12 @@ public enum DomainCodeToken implements TokenType<DomainCodeToken> {
   /**
    * Logical AND.
    */
-  AND("and", AstCommonTokenType.AND),
+  AND("and", AstCommonTokenType.RIGHT),
 
   /**
    * Logical OR.
    */
-  OR("or", AstCommonTokenType.OR),
+  OR("or", AstCommonTokenType.LEFT),
 
   /**
    * Logical NOT.

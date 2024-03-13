@@ -2,7 +2,6 @@ package com.mmm.his.cer.utility.farser.ast.parser;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
-import com.mmm.his.cer.utility.farser.ast.AstSide;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
 import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
@@ -156,8 +155,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   private BooleanExpression<C> expression(BooleanExpression<C> root) {
     root = term(root);
-    while (AstCommonTokenType.isSide(currentToken.getType().getCommonTokenType().orElse(null),
-        AstSide.LEFT)) {
+    while (currentToken.getType().isEqual(AstCommonTokenType.LEFT)) {
       NonTerminal<C> or = createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'OR'
       or.setLeft(root);
@@ -173,8 +171,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    */
   private BooleanExpression<C> term(BooleanExpression<C> root) {
     root = factor(root);
-    while (AstCommonTokenType.isSide(currentToken.getType().getCommonTokenType().orElse(null),
-        AstSide.RIGHT)) {
+    while (currentToken.getType().isEqual(AstCommonTokenType.RIGHT)) {
       NonTerminal<C> and = createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'AND'
       and.setLeft(root);

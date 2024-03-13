@@ -40,12 +40,12 @@ public enum DrgFormulaToken implements TokenType<DrgFormulaToken> {
   /**
    * Logical AND.
    */
-  AND("&", AstCommonTokenType.AND),
+  AND("&", AstCommonTokenType.RIGHT),
 
   /**
    * Logical OR.
    */
-  OR("|", AstCommonTokenType.OR),
+  OR("|", AstCommonTokenType.LEFT),
 
   /**
    * Logical NOT.

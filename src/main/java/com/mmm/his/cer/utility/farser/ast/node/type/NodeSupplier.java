@@ -33,13 +33,13 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
   default NonTerminal<C> createNonTerminalNode(L token) {
     AstCommonTokenType type =
         (AstCommonTokenType) token.getCommonType()
-            .orElseThrow(() -> new UnsupportedOperationException(
-                "The non-terminal node supplier can only create nodes with a "
-                    + CommonTokenType.class.getSimpleName()));
+        .orElseThrow(() -> new UnsupportedOperationException(
+            "The non-terminal node supplier can only create nodes with a "
+                + CommonTokenType.class.getSimpleName()));
     switch (type) {
-      case AND:
+      case RIGHT:
         return new And<>();
-      case OR:
+      case LEFT:
         return new Or<>();
       case NOT:
         return new Not<>();
