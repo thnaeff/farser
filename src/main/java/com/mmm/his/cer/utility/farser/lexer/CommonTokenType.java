@@ -3,9 +3,10 @@ package com.mmm.his.cer.utility.farser.lexer;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 
 /**
- * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
- * Some of them are mandatory and have to exist in your own {@link TokenType} implementation, others
- * are not mandatory.
+ * These common token types can be used to mark tokens in your own {@link TokenType} implementation
+ * to aid in lexing with {@link Lexer#lex(Class, String, LexerTokenFactory)}. Some of them are
+ * mandatory and have to exist in your own {@link TokenType} implementation, others are not
+ * mandatory.
  *
  * @author Thomas Naeff
  */

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  * Parses a code string into {@link LexerToken}s.
  *
  * @author Mike Funaro
+ * @author Thomas Naeff
  */
 public class Lexer {
 
@@ -28,7 +29,7 @@ public class Lexer {
    * @return List of {@link LexerToken} that were created from the input string.
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
-      lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
+  lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
     List<L> result = new ArrayList<>();
     Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
     Matcher delimiterMatcher = delimiterPattern.matcher(input);
@@ -158,7 +159,7 @@ public class Lexer {
    * @return List of strings that only contain values
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<String>
-  getTokens(List<L> tokens, T forTokenType) {
+      getTokens(List<L> tokens, T forTokenType) {
     return tokens.stream()
         .filter(token -> token.getType() == forTokenType)
         .map(LexerToken::getValue)
