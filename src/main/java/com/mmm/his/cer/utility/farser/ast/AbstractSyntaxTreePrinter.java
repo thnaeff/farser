@@ -8,7 +8,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * A printer to output a {@link DrgSyntaxTree} in visual representation.
+ * A printer to output an {@link AbstractSyntaxTree} in visual representation, for example to
+ * convert a formula to a different format or simply for debugging or display purposes.
  *
  * @author Thomas Naeff
  *

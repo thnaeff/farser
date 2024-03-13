@@ -36,7 +36,7 @@ public class PrintingTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
     String[] lines = printed.split(System.lineSeparator());
 
-    System.out.println(printed);
+    // System.out.println(printed);
     assertThat(lines, is(new String[] {
         "01OR",
         "02  AND",
@@ -111,7 +111,7 @@ public class PrintingTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNodeWithPeek);
     String[] lines = printed.split(System.lineSeparator());
 
-    //    System.out.println(printed);
+    //System.out.println(printed);
     assertThat(lines, is(new String[] {
         "01OR next=AND",
         "02  AND next=OR",
