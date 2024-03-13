@@ -35,7 +35,7 @@ public interface TokenType<T extends Enum<T>> {
 
   /**
    * The token value (e.g. the formula operator).<br />
-   * Returns an empty optional for the ATOM token with the value.
+   * Returns an empty optional for the {@link CommonTokenType#ATOM} token with the value.
    *
    * @return The token value.
    */
@@ -48,6 +48,11 @@ public interface TokenType<T extends Enum<T>> {
    */
   Optional<CommonTokenFlag> getCommonTokenType();
 
+  /**
+   * Retrieves the {@link CommonTokenFlag} but fails with an exception if no such flag is available.
+   *
+   * @return The flag
+   */
   default CommonTokenFlag getCommonTokenTypeOrThrow() {
     return getCommonTokenType().orElseThrow(
         () -> new UnsupportedOperationException(
@@ -55,7 +60,7 @@ public interface TokenType<T extends Enum<T>> {
   }
 
   /**
-   * A simple equals-check against the {@link CommonTokenType} (if there is one set for this token).
+   * A simple equals-check against a {@link CommonTokenFlag} (if there is one set for this token).
    *
    * @param commonTokenType The common token type to check against. May be <code>null</code>.
    * @return Whether or not the common types are equal

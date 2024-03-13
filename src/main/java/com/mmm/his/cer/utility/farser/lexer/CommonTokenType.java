@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
-import com.mmm.his.cer.utility.farser.ast.AstSide;
 
 /**
  * These common token types can be used to mark tokens in your own {@link TokenType} implementation.
@@ -35,31 +34,20 @@ public enum CommonTokenType implements CommonTokenFlag {
   SPACE(true);
 
   /**
-   * One or more spaces in a non-capturing group. <br />
+   * One or more spaces in a non-capturing group.<br />
    * The non-capturing group is important to avoid extra groups to be captured once the complete
    * token pattern is assembled.
    */
   public static final String SPACE_PATTERN = "(?: )+";
 
   private final boolean mandatory;
-  private final AstSide side;
-
-  CommonTokenType(boolean mandatory, AstSide side) {
-    this.mandatory = mandatory;
-    this.side = side;
-  }
 
   CommonTokenType(boolean mandatory) {
     this.mandatory = mandatory;
-    this.side = null;
   }
 
   public boolean isMandatory() {
     return mandatory;
-  }
-
-  public AstSide getSide() {
-    return side;
   }
 
 }
