@@ -224,7 +224,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     // assumed.
     if (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
-      System.out.println("current: " + currentToken.getValue());
     }
   }
 
