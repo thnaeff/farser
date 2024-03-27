@@ -13,6 +13,20 @@ There are two main components to Farser
     - Can be used to evaluate the boolean formula and interact with the evaluation
     - Can be used to iterate through the tree and print its representation
 
+
+**Limitations:**
+
+This library has its limitations. It can lex any desired string with minimal setup (it simply splits 
+the string to lex based on space delimiters), but building the AST has more limitations depending 
+on the current state of this library implementation. The currently known limitations are:
+
+ - Two operators next to each other are not possible. The formula is expected to alternate operand and operator
+    - for example in `COUNT > 0`, `COUNT` has to be an operand (a "variable" which will get substituted 
+      with some value) and it can not be an operator (an implementation of `TokenType`)
+ - It does not recognize any functions/operators with parameters 
+    - for example, `List(1, 2, 3)` will not build a proper AST
+
+
 ----
 
 ### Formula Lexer
