@@ -156,7 +156,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   private BooleanExpression<C> expression(BooleanExpression<C> root) {
     root = term(root);
     while (currentToken.getType().isEqual(AstCommonTokenType.LEFT)) {
-      NonTerminal<C> or = createNonTerminalNode(currentToken);
+      NonTerminal<C> or = nodeSupplier.createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'OR'
       or.setLeft(root);
       root = term(root);
@@ -172,7 +172,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   private BooleanExpression<C> term(BooleanExpression<C> root) {
     root = factor(root);
     while (currentToken.getType().isEqual(AstCommonTokenType.RIGHT)) {
-      NonTerminal<C> and = createNonTerminalNode(currentToken);
+      NonTerminal<C> and = nodeSupplier.createNonTerminalNode(currentToken);
       this.eat(currentToken.getType().getCommonTokenTypeOrThrow()); // Move iterator if 'AND'
       and.setLeft(root);
       root = factor(root);
@@ -191,14 +191,16 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     // below.
     CommonTokenFlag commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
-      root = createTerminalNode(currentToken);
+      NodeSupplier<L, C> supplier = suppliers.getOrDefault(
+          currentToken.getValue(), nodeSupplier);
+      root = supplier.createNode(currentToken);
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
     } else if (commonType == AstCommonTokenType.LPAREN) {
       this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
       root = this.expression(root);
       this.eat(AstCommonTokenType.RPAREN);
     } else if (commonType == AstCommonTokenType.NOT) {
-      NonTerminal<C> not = createNonTerminalNode(currentToken);
+      NonTerminal<C> not = nodeSupplier.createNonTerminalNode(currentToken);
       this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
       root = factor(root);
       not.setLeft(root);
@@ -224,40 +226,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       currentToken = this.tokenIterator.next();
       System.out.println("current: " + currentToken.getValue());
     }
-  }
-
-
-  /**
-   *
-   *
-   * @param token
-   * @return
-   */
-  private NonTerminal<C> createNonTerminalNode(L token) {
-    return nodeSupplier.createNonTerminalNode(token);
-    // if (!(node instanceof NonTerminal)) {
-    // String commonTypeInfo = token.getCommonType()
-    // .map(val -> " (" + CommonTokenType.class.getSimpleName() + "." + val + ")")
-    // .orElse("");
-    // throw new FarserException("Invalid node type supplied. Token type "
-    // + token.getType()
-    // + commonTypeInfo
-    // + " requires a node of type "
-    // + NonTerminal.class.getSimpleName());
-    // }
-    // return (NonTerminal<C>) node;
-  }
-
-  /**
-   *
-   *
-   * @param token
-   * @return
-   */
-  private BooleanExpression<C> createTerminalNode(L token) {
-    NodeSupplier<L, C> supplier = suppliers.getOrDefault(
-        token.getValue(), nodeSupplier);
-    return supplier.createNode(token);
   }
 
 }
