@@ -102,6 +102,30 @@ public class PrintingTest {
   }
 
   @Test
+  public void testNegatedVariables() throws Exception {
+
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & ~B | C");
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
+        new StringOperandSupplier(), Collections.emptyMap());
+
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+
+    String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
+    String[] lines = printed.split(System.lineSeparator());
+
+    System.out.println(printed);
+    assertThat(lines, is(new String[] {
+        "01OR",
+        "02  AND",
+        "03    A",
+        "03    NOT",
+        "04      B",
+        "02  C"
+    }));
+
+  }
+
+  @Test
   public void testPrintTreeWithPeek() throws Exception {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A & B | C) & D | (E & F)");

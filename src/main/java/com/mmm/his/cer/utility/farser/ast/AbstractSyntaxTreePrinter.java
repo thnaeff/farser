@@ -2,6 +2,7 @@ package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
+import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -85,25 +86,30 @@ public final class AbstractSyntaxTreePrinter {
     List<String> prefixes = new ArrayList<>();
     LtrExpressionIterator<T> iter = ast.iterator();
 
-    while (iter.hasNext()) {
-      // Need to get next first, so that depth of new/current node is available.
-      Expression<T, ?> node = iter.next();
-      previousDepth = currentDepth;
-      currentDepth = iter.getCurrentDepth();
+    try {
+      while (iter.hasNext()) {
+        // Need to get next first, so that depth of new/current node is available.
+        Expression<T, ?> node = iter.next();
+        previousDepth = currentDepth;
+        currentDepth = iter.getCurrentDepth();
 
-      String prefix = prefix(prefixes, currentDepth, indentation);
-      AstPrinterContext<T> context = createPrinterContext(iter, prefix, previousDepth);
-      appendPrinted(sb, printNode, node, context);
-    }
+        String prefix = prefix(prefixes, currentDepth, indentation);
+        AstPrinterContext<T> context = createPrinterContext(iter, prefix, previousDepth);
+        appendPrinted(sb, printNode, node, context);
+      }
 
-    // Call the printing again for each depth, from the current node all the way back up to the
-    // root depth. This allows the printer to possibly close any nesting-dependent structures.
-    int nextDepth = iter.getPeekedDepth();
-    for (; currentDepth >= 1; currentDepth--) {
-      String prefix = prefix(prefixes, currentDepth, indentation);
-      AstPrinterContext<T> context = new AstPrinterContext<>(prefix, currentDepth,
-          AstPrintDirection.UP, null, nextDepth, AstPrintDirection.UP);
-      appendPrinted(sb, printNode, null, context);
+      // Call the printing again for each depth, from the current node all the way back up to the
+      // root depth. This allows the printer to possibly close any nesting-dependent structures.
+      int nextDepth = iter.getPeekedDepth();
+      for (; currentDepth >= 1; currentDepth--) {
+        String prefix = prefix(prefixes, currentDepth, indentation);
+        AstPrinterContext<T> context = new AstPrinterContext<>(prefix, currentDepth,
+            AstPrintDirection.UP, null, nextDepth, AstPrintDirection.UP);
+        appendPrinted(sb, printNode, null, context);
+      }
+    } catch (Exception exc) {
+      throw new FarserException(
+          "Failed to print. Printed up to: " + System.lineSeparator() + sb.toString(), exc);
     }
 
     return sb.toString();
