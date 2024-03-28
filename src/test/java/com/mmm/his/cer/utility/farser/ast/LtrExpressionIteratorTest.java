@@ -271,4 +271,39 @@ public class LtrExpressionIteratorTest {
 
   }
 
+  @Test
+  public void testNegatedOperandsIterator() throws Exception {
+
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("~A & ~B");
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
+        new StringOperandSupplier(), Collections.emptyMap());
+
+    // System.out.println(lexerTokens);
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+
+    LtrExpressionIterator<MaskedContext<String>> iter = ast.iterator();
+
+    assertThat(iter.hasNext(), is(true));
+    assertThat(iter.getCurrentDepth(), is(0));
+
+    assertThat(iter.next().print(), is("AND"));
+    assertThat(iter.getCurrentDepth(), is(1));
+
+    assertThat(iter.next().print(), is("NOT"));
+    assertThat(iter.getCurrentDepth(), is(2));
+
+    assertThat(iter.next().print(), is("A"));
+    assertThat(iter.getCurrentDepth(), is(3));
+
+    assertThat(iter.next().print(), is("NOT"));
+    assertThat(iter.getCurrentDepth(), is(2));
+
+    assertThat(iter.next().print(), is("B"));
+    assertThat(iter.getCurrentDepth(), is(3));
+
+    assertThrows(NoSuchElementException.class, iter::next);
+    assertThat(iter.hasNext(), is(false));
+
+  }
+
 }

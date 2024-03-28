@@ -19,4 +19,14 @@ public class FarserException extends RuntimeException {
     super(message);
   }
 
+  /**
+   * A new exception.
+   *
+   * @param message The exception message
+   * @param thrw    The causing exception
+   */
+  public FarserException(String message, Throwable thrw) {
+    super(message, thrw);
+  }
+
 }

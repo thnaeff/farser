@@ -3,6 +3,7 @@ package com.mmm.his.cer.utility.farser.ast.node;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * An iterator which iterates over the complete expression, top down (starting at the root node) and
@@ -36,9 +37,24 @@ public class LtrExpressionIterator<C> implements Iterator<Expression<C, ?>> {
     this(depth, copy.nodes);
   }
 
+
+  /**
+   * An iterator over the provided list of nodes (and recursively into their child nodes).
+   *
+   * @param nodes The list of nodes. None of the elements may be <code>null</code>.
+   */
+  public LtrExpressionIterator(List<Expression<C, ?>> nodes) {
+    this(0, nodes.iterator());
+  }
+
+  /**
+   * An iterator over the provided list of nodes (and recursively into their child nodes).
+   *
+   * @param nodes The list of nodes. None of the elements may be <code>null</code>.
+   */
   @SafeVarargs
   public LtrExpressionIterator(Expression<C, ?>... nodes) {
-    this(0, Arrays.asList(nodes).iterator());
+    this(Arrays.asList(nodes));
   }
 
   /**
@@ -98,9 +114,18 @@ public class LtrExpressionIterator<C> implements Iterator<Expression<C, ?>> {
     }
 
     Expression<C, ?> current = nodes.next();
+    int nextDepth = currentDepth + 1;
+
+    if (current == null) {
+      throw new NullPointerException("A node is NULL (when recursing from depth "
+          + currentDepth
+          + " to depth "
+          + nextDepth
+          + ")");
+    }
 
     // Keep node iterator for later to iterate down the tree.
-    currentIterator = new LtrExpressionIterator<>(currentDepth + 1, current.iterator());
+    currentIterator = new LtrExpressionIterator<>(nextDepth, current.iterator());
 
     return current;
   }

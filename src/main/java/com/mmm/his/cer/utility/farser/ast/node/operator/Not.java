@@ -1,5 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.operator;
 
+import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanNonTerminal;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 
@@ -32,6 +33,11 @@ public class Not<C> extends BooleanNonTerminal<C> {
   public Boolean evaluate(C context) {
     boolean evaluation = left.evaluate(context);
     return !evaluation;
+  }
+
+  @Override
+  public LtrExpressionIterator<C> iterator() {
+    return new LtrExpressionIterator<>(left);
   }
 
   @Override
