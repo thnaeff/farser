@@ -424,7 +424,7 @@ public class AstEvaluationTest {
     }
   }
 
-  public static class StringOperandSupplier implements
+  private static class StringOperandSupplier implements
   NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     @Override
