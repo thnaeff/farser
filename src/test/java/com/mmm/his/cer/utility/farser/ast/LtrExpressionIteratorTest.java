@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThrows;
 
-import com.mmm.his.cer.utility.farser.ast.AstTest.StringOperandSupplier;
+import com.mmm.his.cer.utility.farser.ast.AstEvaluationTest.StringOperandSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;

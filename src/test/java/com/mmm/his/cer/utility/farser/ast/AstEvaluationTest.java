@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Mike Funaro
  */
-public class AstTest {
+public class AstEvaluationTest {
 
   final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<String>>> suppliers = new HashMap<>();
   final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>>> customOperandSuppliers =
