@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Mike Funaro
  */
-public class AstTest {
+public class AstEvaluationTest {
 
   final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<String>>> suppliers = new HashMap<>();
   final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>>> customOperandSuppliers =
@@ -424,7 +424,7 @@ public class AstTest {
     }
   }
 
-  public static class StringOperandSupplier implements
+  private static class StringOperandSupplier implements
   NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     @Override

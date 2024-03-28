@@ -4,10 +4,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter.AstPrinterContext;
-import com.mmm.his.cer.utility.farser.ast.AstTest.StringOperandSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
+import com.mmm.his.cer.utility.farser.ast.setup.StringOperandSupplier;
 import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
@@ -96,6 +96,30 @@ public class PrintingTest {
         "02  AND",
         "03    A",
         "03    B",
+        "02  C"
+    }));
+
+  }
+
+  @Test
+  public void testNegatedVariables() throws Exception {
+
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & ~B | C");
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
+        new StringOperandSupplier(), Collections.emptyMap());
+
+    AbstractSyntaxTree<MaskedContext<String>> ast = parser.buildTree();
+
+    String printed = AbstractSyntaxTreePrinter.printTree(ast, PrintingTest::printNode);
+    String[] lines = printed.split(System.lineSeparator());
+
+    System.out.println(printed);
+    assertThat(lines, is(new String[] {
+        "01OR",
+        "02  AND",
+        "03    A",
+        "03    NOT",
+        "04      B",
         "02  C"
     }));
 
