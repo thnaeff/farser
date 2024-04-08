@@ -136,26 +136,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   }
 
   /**
-   *
-   *
-   * @param <X>
-   * @param operator
-   * @param left
-   * @param leftOperatorPrecedence
-   * @return
-   */
-  private <X> Expression<C, X> binaryLeftRightNode(NonTerminal<C, X> operator,
-      Expression<C, X> left, int leftOperatorPrecedence) {
-    // Save the current operator precedence before advancing the token iterator
-    int operatorPrecedence = getCurrentOperatorPrecedence();
-    this.eat();
-    operator.setLeft(left);
-    Expression<C, X> right = term(left, operatorPrecedence);
-    operator.setRight(right);
-    return uncheckedCast(operator);
-  }
-
-  /**
    * Expression method which will build the lower precedence elements after parsing a term.
    *
    * @param <X>                    A dummy data type for the node evaluation result types to avoid
@@ -177,7 +157,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
       // different evaluation return type than the individual left/right nodes. Cast it.
-      left = binaryLeftRightNode(uncheckedCast(operator), left, leftOperatorPrecedence);
+      left = binary(uncheckedCast(operator), left);
     }
     return left;
   }
@@ -204,9 +184,27 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
       // different evaluation return type than the individual left/right nodes. Cast it.
-      left = binaryLeftRightNode(uncheckedCast(operator), left, leftOperatorPrecedence);
+      left = binary(uncheckedCast(operator), left);
     }
     return left;
+  }
+
+  /**
+   * Creates a binary node with a left-side and a right-side child node.
+   *
+   * @param <X>
+   * @param operator
+   * @param left
+   * @return
+   */
+  private <X> Expression<C, X> binary(NonTerminal<C, X> operator, Expression<C, X> left) {
+    // Save the current operator precedence before advancing the token iterator
+    int operatorPrecedence = getCurrentOperatorPrecedence();
+    this.eat();
+    operator.setLeft(left);
+    Expression<C, X> right = term(left, operatorPrecedence);
+    operator.setRight(right);
+    return uncheckedCast(operator);
   }
 
   /**
@@ -223,11 +221,34 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return A new (non-terminal/operator) node with a new evaluation return type
    */
+  private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
+    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+    this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
+    left = factor(left, leftOperatorPrecedence);
+    operator.setLeft(left);
+    // The non-terminal/operator node, as combination of left/right evaluation, may have a
+    // different evaluation return type than the individual left/right nodes.
+    return uncheckedCast(operator);
+  }
+
+  /**
+   * Method which will build an unary node, with only one child node.
+   *
+   * @param <R>                    The (boolean) return type of the negated <code>left</code> node,
+   *                               as well as the (boolean) return type of the returned not-node.
+   *                               This data type is not set as {@link Boolean} to avoid for
+   *                               (unchecked) casting. In general, it can not programmatically
+   *                               guarantee that one nodes evaluation return type matches the
+   *                               other. It has to rely on runtime (class cast) exceptions when
+   *                               malformed formulas or implementations are used.
+   * @param left                   The node to be used (or passed further down) as left-side node
+   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
+   * @return A new unary node with a new evaluation return type
+   */
   private <R> Expression<C, R> unary(Expression<C, R> left, int leftOperatorPrecedence) {
     NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-    this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'...
-    this.eat(AstCommonTokenType.UNARY); // ...or move iterator if 'UNARY' (it can never be both)
-    left = factor(left, leftOperatorPrecedence);
+    this.eat(AstCommonTokenType.UNARY); // Move iterator if 'UNARY'
+    left = expression(left, leftOperatorPrecedence);
     operator.setLeft(left);
     // The non-terminal/operator node, as combination of left/right evaluation, may have a
     // different evaluation return type than the individual left/right nodes.
@@ -262,7 +283,9 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);
       this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
-    } else if ((commonType == AstCommonTokenType.UNARY) || (commonType == AstCommonTokenType.NOT)) {
+    } else if (commonType == AstCommonTokenType.NOT) {
+      left = this.not(left, leftOperatorPrecedence);
+    } else if (commonType == AstCommonTokenType.UNARY) {
       left = this.unary(left, leftOperatorPrecedence);
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);

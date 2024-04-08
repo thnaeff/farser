@@ -40,12 +40,12 @@ public class IfTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
 
-    System.out.println(printed);
+    // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "THEN",
-        "  IF",
+        "IF",
+        "  THEN",
         "    A",
-        "  B",
+        "    B",
     }));
 
   }
@@ -62,14 +62,14 @@ public class IfTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
 
-    System.out.println(printed);
+    // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "ELSE",
-        "  THEN",
-        "    IF",
+        "IF",
+        "  ELSE",
+        "    THEN",
         "      A",
-        "    B",
-        "  C",
+        "      B",
+        "    C",
     }));
 
   }
@@ -86,19 +86,19 @@ public class IfTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
 
-    System.out.println(printed);
+    // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "ELSE",
+        "IF",
         "  ELSE",
         "    THEN",
-        "      IF",
-        "        A",
+        "      A",
         "      B",
-        "    THEN",
-        "      IF",
+        "    IF",
+        "      ELSE",
+        "        THEN",
+        "          C",
+        "          D",
         "        C",
-        "      D",
-        "  C",
     }));
 
   }
