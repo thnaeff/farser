@@ -65,7 +65,8 @@ public class AstLimitationsTest {
     assertThat(lines, is(new String[] {
         "IN",
         "  a",
-        "  1," // ... stuff is missing here
+        "  1,"
+        // ... stuff is missing here due to the limitation of the current AST implementation
     }));
 
   }

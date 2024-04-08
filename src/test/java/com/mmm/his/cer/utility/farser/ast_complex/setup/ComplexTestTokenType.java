@@ -24,12 +24,6 @@ public enum ComplexTestTokenType
   RPAREN(")", AstCommonTokenType.RPAREN),
   NOT("!", AstCommonTokenType.NOT),
 
-  IF("IF"),
-  THEN("THEN"),
-  ELSE("ELSE"),
-  ELSEIF("ELSE IF"),
-  ENDIF("ENDIF"),
-
   // Operator precedence: Lower value = stronger bond
   GT(">", 1),
   LT("<", 1),
