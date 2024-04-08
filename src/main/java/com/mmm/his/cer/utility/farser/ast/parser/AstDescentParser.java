@@ -233,16 +233,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     return uncheckedCast(operator);
   }
 
-  private <R> Expression<C, R> any(Expression<C, R> left, int leftOperatorPrecedence) {
-    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-    this.eat();
-    left = expression(left, leftOperatorPrecedence);
-    operator.setLeft(left);
-    // The non-terminal/operator node, as combination of left/right evaluation, may have a
-    // different evaluation return type than the individual left/right nodes.
-    return uncheckedCast(operator);
-  }
-
   /**
    * Factor out a single operand.
    *
@@ -274,11 +264,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     } else if (commonType == AstCommonTokenType.NOT) {
       left = this.not(left, leftOperatorPrecedence);
     } else {
-      left = any(left, leftOperatorPrecedence);
-      // throw new FarserException("Expression malformed on token "
-      // + currentToken
-      // + ". Token is not configured as common token type "
-      // + "or is not an operator (has no operator precedence set).");
+      throw new FarserException("Expression malformed on token " + currentToken);
     }
     return left;
   }
