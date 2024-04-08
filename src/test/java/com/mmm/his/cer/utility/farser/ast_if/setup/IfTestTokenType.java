@@ -23,7 +23,7 @@ AstTokenType<IfTestTokenType> {
   LPAREN("(", AstCommonTokenType.LPAREN),
   RPAREN(")", AstCommonTokenType.RPAREN),
 
-  IF("IF", AstCommonTokenType.NOT),
+  IF("IF", AstCommonTokenType.UNARY),
   THEN("THEN", 1),
   ELSE("ELSE", 2),
   // ELSEIF("ELSE IF", 3),

@@ -53,6 +53,7 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
       case OR:
         return (NonTerminal<C, ?>) new Or<>();
       case NOT:
+      case UNARY:
         return (NonTerminal<C, ?>) new Not<>();
       default:
         throw new UnsupportedOperationException(

@@ -223,9 +223,10 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
    * @return A new (non-terminal/operator) node with a new evaluation return type
    */
-  private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
+  private <R> Expression<C, R> unary(Expression<C, R> left, int leftOperatorPrecedence) {
     NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-    this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
+    this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'...
+    this.eat(AstCommonTokenType.UNARY); // ...or move iterator if 'UNARY' (it can never be both)
     left = factor(left, leftOperatorPrecedence);
     operator.setLeft(left);
     // The non-terminal/operator node, as combination of left/right evaluation, may have a
@@ -261,8 +262,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);
       this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
-    } else if (commonType == AstCommonTokenType.NOT) {
-      left = this.not(left, leftOperatorPrecedence);
+    } else if ((commonType == AstCommonTokenType.UNARY) || (commonType == AstCommonTokenType.NOT)) {
+      left = this.unary(left, leftOperatorPrecedence);
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
     }

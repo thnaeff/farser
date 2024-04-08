@@ -25,8 +25,15 @@ public enum AstCommonTokenType implements CommonTokenFlag {
 
   /**
    * A negation/not.
+   *
+   * @deprecated Use {@link #UNARY} instead
    */
   NOT,
+
+  /**
+   * An unary operator like "NOT", "IF", etc. with only a left-side expression.
+   */
+  UNARY,
 
   /**
    * An "AND" operator.<br>
