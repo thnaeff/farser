@@ -26,7 +26,6 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   /**
    * A negation/not.
    *
-   * @deprecated Use {@link #UNARY} instead
    */
   NOT,
 
