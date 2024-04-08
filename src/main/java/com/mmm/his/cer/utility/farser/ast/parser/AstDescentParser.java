@@ -136,6 +136,26 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   }
 
   /**
+   *
+   *
+   * @param <X>
+   * @param operator
+   * @param left
+   * @param leftOperatorPrecedence
+   * @return
+   */
+  private <X> Expression<C, X> binaryLeftRightNode(NonTerminal<C, X> operator,
+      Expression<C, X> left, int leftOperatorPrecedence) {
+    // Save the current operator precedence before advancing the token iterator
+    int operatorPrecedence = getCurrentOperatorPrecedence();
+    this.eat();
+    operator.setLeft(left);
+    Expression<C, X> right = term(left, operatorPrecedence);
+    operator.setRight(right);
+    return uncheckedCast(operator);
+  }
+
+  /**
    * Expression method which will build the lower precedence elements after parsing a term.
    *
    * @param <X>                    A dummy data type for the node evaluation result types to avoid
@@ -155,15 +175,9 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     // Higher value means lower precedence
     while (getCurrentTokenAstType().isLowerOrSamePrecedence(leftOperatorPrecedence)) {
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-      // Save the current operator precedence before advancing the token iterator
-      int operatorPrecedence = getCurrentOperatorPrecedence();
-      this.eat();
-      operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
-      operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
-      // different evaluation return type than the individual left/right nodes.
-      left = uncheckedCast(operator);
+      // different evaluation return type than the individual left/right nodes. Cast it.
+      left = binaryLeftRightNode(uncheckedCast(operator), left, leftOperatorPrecedence);
     }
     return left;
   }
@@ -188,15 +202,9 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     left = factor(left, leftOperatorPrecedence);
     while (getCurrentTokenAstType().isHigherPrecedence(leftOperatorPrecedence)) {
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-      // Save the current operator precedence before advancing the token iterator
-      int operatorPrecedence = getCurrentOperatorPrecedence();
-      this.eat();
-      operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
-      operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
-      // different evaluation return type than the individual left/right nodes.
-      left = uncheckedCast(operator);
+      // different evaluation return type than the individual left/right nodes. Cast it.
+      left = binaryLeftRightNode(uncheckedCast(operator), left, leftOperatorPrecedence);
     }
     return left;
   }
@@ -219,6 +227,16 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
     this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
     left = factor(left, leftOperatorPrecedence);
+    operator.setLeft(left);
+    // The non-terminal/operator node, as combination of left/right evaluation, may have a
+    // different evaluation return type than the individual left/right nodes.
+    return uncheckedCast(operator);
+  }
+
+  private <R> Expression<C, R> any(Expression<C, R> left, int leftOperatorPrecedence) {
+    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
+    this.eat();
+    left = expression(left, leftOperatorPrecedence);
     operator.setLeft(left);
     // The non-terminal/operator node, as combination of left/right evaluation, may have a
     // different evaluation return type than the individual left/right nodes.
@@ -254,9 +272,13 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       left = this.expression(left, leftOperatorPrecedence);
       this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
-      left = not(left, leftOperatorPrecedence);
+      left = this.not(left, leftOperatorPrecedence);
     } else {
-      throw new FarserException("Expression malformed on token " + currentToken);
+      left = any(left, leftOperatorPrecedence);
+      // throw new FarserException("Expression malformed on token "
+      // + currentToken
+      // + ". Token is not configured as common token type "
+      // + "or is not an operator (has no operator precedence set).");
     }
     return left;
   }
