@@ -4,7 +4,8 @@ Farser is a parsing library centered around DRG formulas created by HIS Clinical
 Research. A DRG formula can be thought of as a simple set of boolean logic that is applied to a 
 "mask" (a list of string keys which evaluate to true when they exist or false when they not exist).
 
-The library is further open to define your custom tokens and lex/parse any type of boolean formula.
+The library is further open to define your custom tokens and lex/parse any type of formula (expression) 
+or for example if-statements.
 
 There are two main components to Farser
 

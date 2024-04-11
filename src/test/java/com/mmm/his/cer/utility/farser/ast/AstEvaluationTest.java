@@ -53,7 +53,7 @@ public class AstEvaluationTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(context.getMatches().toArray(),
-        Matchers.arrayContaining(new Object[] {"luck", "E"}));
+        Matchers.arrayContaining(new Object[] {GrouperFunctionNode.BILATERAL_EVAL_KEYWORD, "E"}));
   }
 
   @Test
@@ -451,7 +451,7 @@ public class AstEvaluationTest {
 
     public MsdrgGrouperFunctionSupplier() {
       otherInformation = new ArrayList<>();
-      otherInformation.add("luck");
+      otherInformation.add(GrouperFunctionNode.BILATERAL_EVAL_KEYWORD);
     }
 
     @Override
@@ -462,6 +462,8 @@ public class AstEvaluationTest {
 
   private static class GrouperFunctionNode implements BooleanExpression<MaskedContext<String>> {
 
+    static final String BILATERAL_EVAL_KEYWORD = "luck";
+
     final List<String> otherInformation;
 
     GrouperFunctionNode(List<String> otherInformation) {
@@ -470,8 +472,8 @@ public class AstEvaluationTest {
 
     @Override
     public Boolean evaluate(MaskedContext<String> context) {
-      if (otherInformation.contains("luck")) {
-        context.accumulate("luck");
+      if (otherInformation.contains(BILATERAL_EVAL_KEYWORD)) {
+        context.accumulate(BILATERAL_EVAL_KEYWORD);
         return true;
       }
       return false;

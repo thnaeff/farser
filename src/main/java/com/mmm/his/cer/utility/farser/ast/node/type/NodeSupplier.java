@@ -27,10 +27,22 @@ public interface NodeSupplier<L extends LexerToken<?>, C> {
    * @param token The formula token/operand for which to create the node for
    * @return Expression that was instantiated in this method.
    */
-  Expression<C, ?> createNode(L token);
+  <E> Expression<C, E> createNode(L token);
 
   /**
-   * Creates a non-terminal node (e.g. an operand node).
+   * Creates a terminal {@link Statement} node.
+   *
+   * @param token The formula token for which to create the node for
+   * @return Statement that was instantiated in this method.
+   */
+  default Statement<C> createStatement(L token) {
+    throw new UnsupportedOperationException("Non-terminal node type "
+        + NonTerminalType.STATEMENT
+        + " used, but statement supplier is not implemented.");
+  }
+
+  /**
+   * Creates a non-terminal node (e.g. an AND/OR/EQUAL operator node).
    *
    * @param token The formula token/operand for which to create the node for
    * @return Non-terminal expression that was instantiated in this method.

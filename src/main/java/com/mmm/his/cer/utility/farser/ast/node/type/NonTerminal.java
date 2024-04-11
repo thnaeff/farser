@@ -35,6 +35,27 @@ public abstract class NonTerminal<C, E> implements BooleanExpression<C> {
     this.right = right;
   }
 
+  /**
+   * The node type needed for the left-side assignment (set with {@link #setLeft(Expression)}).<br>
+   * By default, the left-side node is an {@link NonTerminalType#EXPRESSION}.
+   *
+   * @return The type
+   */
+  public NonTerminalType getLeftType() {
+    return NonTerminalType.EXPRESSION;
+  }
+
+  /**
+   * The node type needed for the right-side assignment (set with
+   * {@link #setRight(Expression)}).<br>
+   * By default, the right-side node is an {@link NonTerminalType#EXPRESSION}.
+   *
+   * @return The type
+   */
+  public NonTerminalType getRightType() {
+    return NonTerminalType.EXPRESSION;
+  }
+
   @Override
   public LtrExpressionIterator<C> iterator() {
     return new LtrExpressionIterator<>(left, right);

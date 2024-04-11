@@ -8,6 +8,7 @@ import com.mmm.his.cer.utility.farser.ast.DrgSyntaxTree;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminalType;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
@@ -151,19 +152,13 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *         return type.
    */
   private <X> Expression<C, X> expression(Expression<C, X> left, int leftOperatorPrecedence) {
-    left = term(left, leftOperatorPrecedence);
+    left = term(left, NonTerminalType.EXPRESSION, leftOperatorPrecedence);
     // Higher value means lower precedence
     while (getCurrentTokenAstType().isLowerOrSamePrecedence(leftOperatorPrecedence)) {
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-      // Save the current operator precedence before advancing the token iterator
-      int operatorPrecedence = getCurrentOperatorPrecedence();
-      this.eat();
-      operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
-      operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
-      // different evaluation return type than the individual left/right nodes.
-      left = uncheckedCast(operator);
+      // different evaluation return type than the individual left/right nodes. Cast it.
+      left = binary(uncheckedCast(operator), left);
     }
     return left;
   }
@@ -184,21 +179,38 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *         type. Or the input <code>left</code> node passed through with a matching evaluation
    *         return type.
    */
-  private <X> Expression<C, X> term(Expression<C, X> left, int leftOperatorPrecedence) {
-    left = factor(left, leftOperatorPrecedence);
+  private <X> Expression<C, X> term(Expression<C, X> left, NonTerminalType type,
+      int leftOperatorPrecedence) {
+    left = factor(left, type, leftOperatorPrecedence);
     while (getCurrentTokenAstType().isHigherPrecedence(leftOperatorPrecedence)) {
       NonTerminal<C, X> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-      // Save the current operator precedence before advancing the token iterator
-      int operatorPrecedence = getCurrentOperatorPrecedence();
-      this.eat();
-      operator.setLeft(left);
-      Expression<C, X> right = term(left, operatorPrecedence);
-      operator.setRight(right);
       // The non-terminal/operator node, as combination of left/right evaluation, may have a
-      // different evaluation return type than the individual left/right nodes.
-      left = uncheckedCast(operator);
+      // different evaluation return type than the individual left/right nodes. Cast it.
+      left = binary(uncheckedCast(operator), left);
     }
     return left;
+  }
+
+  /**
+   * Creates a binary node with a left-side and a right-side child node.
+   *
+   * @param <X>      A dummy data type for the node evaluation result types to avoid the use of
+   *                 <code>?</code> and the need for (unchecked) casting. In general, it can not
+   *                 programmatically guarantee that one nodes evaluation return type matches the
+   *                 other. It has to rely on runtime (class cast) exceptions when malformed
+   *                 formulas or implementations are used.
+   * @param operator The operator on which to set child nodes
+   * @param left     The node to be used as left-side node
+   * @return The <code>operator</code>, but now updated with a left- and right-side expression.
+   */
+  private <X> Expression<C, X> binary(NonTerminal<C, X> operator, Expression<C, X> left) {
+    // Save the current operator precedence before advancing the token iterator
+    int operatorPrecedence = getCurrentOperatorPrecedence();
+    this.eat();
+    operator.setLeft(left);
+    Expression<C, X> right = term(left, operator.getRightType(), operatorPrecedence);
+    operator.setRight(right);
+    return uncheckedCast(operator);
   }
 
   /**
@@ -218,7 +230,7 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   private <R> Expression<C, R> not(Expression<C, R> left, int leftOperatorPrecedence) {
     NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
     this.eat(AstCommonTokenType.NOT); // Move iterator if 'NOT'
-    left = factor(left, leftOperatorPrecedence);
+    left = factor(left, operator.getLeftType(), leftOperatorPrecedence);
     operator.setLeft(left);
     // The non-terminal/operator node, as combination of left/right evaluation, may have a
     // different evaluation return type than the individual left/right nodes.
@@ -240,21 +252,33 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
    *         return type. Or the input <code>left</code> node passed through with a matching
    *         evaluation return type.
    */
-  private <X> Expression<C, X> factor(Expression<C, X> left, int leftOperatorPrecedence) {
+  // TODO Is 'left' needed here as method input? It always gets overridden or results in an
+  // exception as fall-through.
+  private <X> Expression<C, X> factor(Expression<C, X> left, NonTerminalType type,
+      int leftOperatorPrecedence) {
     TokenType<?> tokenType = currentToken.getType();
     // Get common type for generic checking.
     // Ok to return 'null', it is only used in NPE safe logic below.
     CommonTokenFlag commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
       NodeSupplier<L, C> supplier = suppliers.getOrDefault(currentToken.getValue(), nodeSupplier);
-      left = uncheckedCast(supplier.createNode(currentToken));
+      if (type == NonTerminalType.EXPRESSION) {
+        left = uncheckedCast(supplier.createNode(currentToken));
+      } else if (type == NonTerminalType.STATEMENT) {
+        left = uncheckedCast(supplier.createStatement(currentToken));
+      } else {
+        throw new FarserException("Unknown non-terminal type: " + type);
+      }
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
-    } else if (commonType == AstCommonTokenType.LPAREN) {
-      this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
+    } else if ((commonType == AstCommonTokenType.LPAREN)
+        || (commonType == AstCommonTokenType.GROUP_START)) {
+      this.eat(AstCommonTokenType.GROUP_START); // Move iterator if 'GROUP_START'
+      this.eat(AstCommonTokenType.LPAREN); // ...or move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);
-      this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
+      this.eat(AstCommonTokenType.GROUP_END); // Move iterator if 'GROUP_END'
+      this.eat(AstCommonTokenType.RPAREN); // ...or move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
-      left = not(left, leftOperatorPrecedence);
+      left = this.not(left, leftOperatorPrecedence);
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
     }

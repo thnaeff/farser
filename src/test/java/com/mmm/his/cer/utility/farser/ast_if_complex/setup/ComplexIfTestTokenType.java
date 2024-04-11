@@ -1,4 +1,4 @@
-package com.mmm.his.cer.utility.farser.ast_complex.setup;
+package com.mmm.his.cer.utility.farser.ast_if_complex.setup;
 
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import com.mmm.his.cer.utility.farser.ast.AstCommonTokenType;
@@ -13,44 +13,52 @@ import java.util.Optional;
  * @author Thomas Naeff
  *
  */
-public enum ComplexTestTokenType
-    implements
-    TokenType<ComplexTestTokenType>,
-    AstTokenType<ComplexTestTokenType> {
+public enum ComplexIfTestTokenType
+implements
+TokenType<ComplexIfTestTokenType>,
+AstTokenType<ComplexIfTestTokenType> {
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  LPAREN("(", AstCommonTokenType.LPAREN),
-  RPAREN(")", AstCommonTokenType.RPAREN),
+  LPAREN("(", AstCommonTokenType.GROUP_START),
+  RPAREN(")", AstCommonTokenType.GROUP_END),
   NOT("!", AstCommonTokenType.NOT),
+
+  IF("IF", AstCommonTokenType.GROUP_START),
+  THEN("THEN", 5),
+  ELSE("ELSE", 6),
+  ENDIF("ENDIF", AstCommonTokenType.GROUP_END),
 
   // Operator precedence: Lower value = stronger bond
   GT(">", 1),
   LT("<", 1),
   EQUAL("=", 2),
   AND("&", 3),
-  OR("|", 4),
-
-  IN("IN", 1),
-  IN_TABLE("IN TABLE", 1);
+  OR("|", 4);
 
   private final String value;
   private final CommonTokenFlag commonType;
   private final int operatorPrecedence;
 
-  ComplexTestTokenType(String value, CommonTokenFlag commonType) {
+  ComplexIfTestTokenType(String value, CommonTokenFlag commonType) {
     this.value = value;
     this.commonType = commonType;
     this.operatorPrecedence = AstTokenType.NOT_AN_OPERATOR;
   }
 
-  ComplexTestTokenType(String value, int operatorPrecedence) {
+  ComplexIfTestTokenType(String value, int operatorPrecedence, CommonTokenFlag commonType) {
+    this.value = value;
+    this.commonType = commonType;
+    this.operatorPrecedence = operatorPrecedence;
+  }
+
+  ComplexIfTestTokenType(String value, int operatorPrecedence) {
     this.value = value;
     this.commonType = null;
     this.operatorPrecedence = operatorPrecedence;
   }
 
-  ComplexTestTokenType(String value) {
+  ComplexIfTestTokenType(String value) {
     this(value, null);
   }
 
