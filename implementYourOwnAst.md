@@ -60,11 +60,13 @@ public enum MyOwnTokenType implements TokenType<MyOwnTokenType>, AstTokenType<My
 ```
 
 
-## 2. Implement Terminal Nodes (variables/values)
+## 2. Implement Expression Terminal Nodes (variables/values)
 
 Terminal nodes are the ones which do not have to perform an operation based on an operator. 
 A terminal node can be a scalar value, some string, a variable or some other keyword or 
-special function which needs a dedicated programmatic implementation.
+special function which needs a dedicated programmatic implementation. An `Expression` terminal 
+node returns a value and is defined `NonTerminal` implementation as 
+`NonTerminalType.EXPRESSION` if required for the left/right child node.
 
 The formula `A > 5 & MY_FUNC`  for example will produce terminal nodes for `A`, `5` 
 and `MY_FUNC`.
@@ -89,7 +91,7 @@ public class MyTerminalNode implements Expression<MyAstContext, Integer> {
 
   @Override
   public Integer evaluate(MyAstContext context) {
-    return Integer.valueOf(token.getValue());
+    return token.getValue();
   }
 
   @Override
@@ -107,7 +109,42 @@ public class MyTerminalNode implements Expression<MyAstContext, Integer> {
 
 
 
-## 3. Implement Non-Terminal Nodes (Operators)
+## 3. Implement Statement Terminal Nodes
+
+For nodes which do not return a value (if-then/else body and other statements), the node type 
+`NonTerminalType.STATEMENT` is available. The setup in the `NonTerminal` implementation 
+(described further below) determines whether the left/right child nodes are an `EXPRESSION` or a `STATEMENT`.
+
+```java
+public class MyTerminalStatement implements Statement<ComplexIfTestAstContext> {
+
+  private final MyToken token;
+
+  public MyTerminalStatement(MyToken token) {
+    this.token = token;
+  }
+
+  @Override
+  public void process(ComplexIfTestAstContext context) {
+    // Do something with the token.
+    // A statement can produce "side effects" (e.g. update the context with a result)
+  }
+
+  @Override
+  public String print() {
+    return token.value;
+  }
+
+  @Override
+  public String toString() {
+    return token.value;
+  }
+
+}
+```
+
+
+## 4. Implement Non-Terminal Expression Nodes (Operators)
 
 All the operators (the `[Ast]TokenType` enum elements which have an operator precedence set) 
 will need an implementation to program the logic on how to evaluate them. For example the 
@@ -122,7 +159,22 @@ public class MyGreaterThanOperator<C> extends NonTerminal<C, Integer> {
 
   @Override
   public Boolean evaluate(C context) {
-    return left.evaluate(context) > right.evaluate(context);
+    // See also the other variants of the 'evaluate*' method to get specific data types
+    return left.evaluateAsDouble(context) > right.evaluateAsDouble(context);
+  }
+  
+  // Optionally override this. If both child nodes should return a value, you can 
+  // leave it as default 'EXPRESSION' without overriding.
+  @Override
+  public NonTerminalType getLeftType() {
+    return NonTerminalType.EXPRESSION;
+  }
+  
+  // Optionally override this. If both child nodes should return a value, you can 
+  // leave it as default 'EXPRESSION' without overriding.
+  @Override
+  public NonTerminalType getRightType() {
+    return NonTerminalType.EXPRESSION;
   }
 
   @Override
@@ -137,7 +189,8 @@ public class MyGreaterThanOperator<C> extends NonTerminal<C, Integer> {
 }
 ```
 
-## 4. Create a Context Class
+
+## 5. Create a Context Class
 
 A context object can be passed in to the evaluation. This context object is then passed 
 to all the node evaluation (`Boolean evaluate(C context)`) calls. The context 
@@ -158,7 +211,7 @@ If no evaluation context is needed, then an empty class implementation can be pr
 
 
 
-## 5. Implement a NodeSupplier
+## 6. Implement a NodeSupplier
 
 Now that each operator (non-terminal node) has an implementation and we have a value 
 (terminal node) implementation, we need to tie the token (enum) type together with 
@@ -174,10 +227,14 @@ public class MyAstNodeSupplier implements NodeSupplier<MyOwnToken, MyAstContext>
       if ("MY_FUNCTION".equals(token.getValue())) {
         return new MySpecialFunctionNode(inToken);
       } else {
-        return new MyTerminalNode<MyAstContext>(inToken);
+        return new MyTerminalNode(inToken);
       }
   }
 
+  @Override
+  public Statement<C> createStatement(L token) {
+    return new MyTerminalStatement(token);
+  }
 
   @Override
   public NonTerminal<MyAstContext, ?> createNonTerminalNode(MyOwnToken token) {
@@ -208,7 +265,7 @@ public class MyAstNodeSupplier implements NodeSupplier<MyOwnToken, MyAstContext>
 
 
 
-## 6. Use it
+## 7. Use it
 
 Build the AST:
 
