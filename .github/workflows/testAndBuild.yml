@@ -1,4 +1,4 @@
-name: Maven build
+name: Java CI with Maven
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 jobs:
   build-grouper:
 
-    runs-on: ${{ vars.LINUX_RUNNER }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
