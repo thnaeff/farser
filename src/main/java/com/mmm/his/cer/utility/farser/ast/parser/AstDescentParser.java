@@ -234,30 +234,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   }
 
   /**
-   * Method which will build an unary node, with only one child node.
-   *
-   * @param <R>                    The (boolean) return type of the negated <code>left</code> node,
-   *                               as well as the (boolean) return type of the returned not-node.
-   *                               This data type is not set as {@link Boolean} to avoid for
-   *                               (unchecked) casting. In general, it can not programmatically
-   *                               guarantee that one nodes evaluation return type matches the
-   *                               other. It has to rely on runtime (class cast) exceptions when
-   *                               malformed formulas or implementations are used.
-   * @param left                   The node to be used (or passed further down) as left-side node
-   * @param leftOperatorPrecedence The operator precedence of the provided <code>left</code> node
-   * @return A new unary node with a new evaluation return type
-   */
-  private <R> Expression<C, R> unary(Expression<C, R> left, int leftOperatorPrecedence) {
-    NonTerminal<C, R> operator = uncheckedCast(nodeSupplier.createNonTerminalNode(currentToken));
-    this.eat(AstCommonTokenType.UNARY); // Move iterator if 'UNARY'
-    left = expression(left, leftOperatorPrecedence);
-    operator.setLeft(left);
-    // The non-terminal/operator node, as combination of left/right evaluation, may have a
-    // different evaluation return type than the individual left/right nodes.
-    return uncheckedCast(operator);
-  }
-
-  /**
    * Factor out a single operand.
    *
    * @param <X>                    A dummy data type for the node evaluation result types to avoid
@@ -298,8 +274,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
       this.eat(AstCommonTokenType.RPAREN); // ...or move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
       left = this.not(left, leftOperatorPrecedence);
-    } else if (commonType == AstCommonTokenType.UNARY) {
-      left = this.unary(left, leftOperatorPrecedence);
     } else {
       throw new FarserException("Expression malformed on token " + currentToken);
     }

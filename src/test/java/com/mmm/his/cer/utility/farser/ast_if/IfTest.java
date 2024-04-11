@@ -42,10 +42,9 @@ public class IfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
-        "  THEN",
-        "    A",
-        "    B",
+        "THEN",
+        "  A",
+        "  B",
     }));
 
   }
@@ -64,12 +63,11 @@ public class IfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
-        "  ELSE",
-        "    THEN",
-        "      A",
-        "      B",
-        "    C",
+        "ELSE",
+        "  THEN",
+        "    A",
+        "    B",
+        "  C",
     }));
 
   }
@@ -88,17 +86,15 @@ public class IfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
+        "ELSE",
+        "  THEN",
+        "    A",
+        "    B",
         "  ELSE",
         "    THEN",
-        "      A",
-        "      B",
-        "    IF",
-        "      ELSE",
-        "        THEN",
-        "          C",
-        "          D",
-        "        C",
+        "      C",
+        "      D",
+        "    C",
     }));
 
   }

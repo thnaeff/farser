@@ -48,11 +48,6 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
-   * An unary operator like "IF", etc. with only a left-side expression.
-   */
-  UNARY,
-
-  /**
    * An "AND" operator.<br>
    * <br>
    * This flag exists for backwards compatibility when a {@link NodeSupplier} is used without the

@@ -20,14 +20,14 @@ AstTokenType<IfTestTokenType> {
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  LPAREN("(", AstCommonTokenType.LPAREN),
-  RPAREN(")", AstCommonTokenType.RPAREN),
+  LPAREN("(", AstCommonTokenType.GROUP_START),
+  RPAREN(")", AstCommonTokenType.GROUP_END),
 
-  IF("IF", AstCommonTokenType.UNARY),
+  IF("IF", AstCommonTokenType.GROUP_START),
   THEN("THEN", 1),
   ELSE("ELSE", 2),
   // ELSEIF("ELSE IF", 3),
-  ENDIF("ENDIF", 4);
+  ENDIF("ENDIF", AstCommonTokenType.GROUP_END);
 
   private final String value;
   private final CommonTokenFlag commonType;

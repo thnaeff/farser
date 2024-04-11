@@ -25,8 +25,8 @@ public enum MyOwnTokenType implements TokenType<MyOwnTokenType>, AstTokenType<My
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  LPAREN("(", AstCommonTokenType.LPAREN),
-  RPAREN(")", AstCommonTokenType.RPAREN),
+  LPAREN("(", AstCommonTokenType.GROUP_START),
+  RPAREN(")", AstCommonTokenType.GROUP_END),
 
   AND("&&", 2), // Lower value = higher precedence (stronger bond).
   OR("||", 3),  // See javadoc on 'getOperatorPrecedence()'.
