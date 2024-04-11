@@ -24,85 +24,53 @@ public interface Expression<C, R> extends Iterable<Expression<C, ?>> {
   R evaluate(C context);
 
   /**
-   * Simply adds a null-check to the evaluation result returned from {@link #evaluate(Object)}.
+   * Simply adds a null-check to the evaluation result returned from {@link #evaluate(Object)}.<br>
+   * For details, see:
+   * {@link ExpressionParser#evaluateAsNonNull(Object, java.util.function.Function)}
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result. Never <code>null</code>.
    */
   default R evaluateAsNonNull(C context) {
-    R evaluated = evaluate(context);
-    if (evaluated == null) {
-      throw new NullPointerException("The expression evaluation returned NULL. Not allowed.");
-    }
-    return evaluated;
+    return ExpressionParser.evaluateAsNonNull(context, this::evaluate);
   }
 
   /**
    * Evaluates the expression and returns the evaluation result converted into its specific type (if
    * applicable).<br>
-   * If the evaluation return data is a {@link String}, it will do the following:
-   * <ul>
-   * <li>If the string is double-quoted with <code>"</code>, it returns the result as-is as
-   * {@link String}</li>
-   * <li>If the string is an integer, it parses and returns it as {@link Integer}</li>
-   * <li>If the string is a double or float, it parses and returns it as {@link Double}</li>
-   * </ul>
+   * For details, see: {@link ExpressionParser#evaluateTyped(Object, java.util.function.Function)}
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result in its specific type. Never <code>null</code>.
    */
   default Object evaluateTyped(C context) {
-    R evaluated = evaluateAsNonNull(context);
-    if (evaluated instanceof String) {
-      String str = (String) evaluated;
-      if (str.startsWith("\"") && str.endsWith("\"")) {
-        return str;
-      } else if (ExpressionParser.isInteger(str)) {
-        return Integer.valueOf(str);
-      } else if (ExpressionParser.isDoubleOrFloat(str)) {
-        return Double.valueOf(str);
-      }
-    }
-    return evaluated;
+    return ExpressionParser.evaluateTyped(context, this::evaluate);
   }
 
   /**
-   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the result
-   * as {@link Integer} data type.
+   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the
+   * result.<br>
+   * For details, see:
+   * {@link ExpressionParser#evaluateAsInteger(Object, java.util.function.Function)}
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result. Never <code>null</code>.
    */
   default Integer evaluateAsInteger(C context) {
-    R evaluated = evaluateAsNonNull(context);
-    if (evaluated instanceof String) {
-      return Integer.parseInt((String) evaluated);
-    } else {
-      // Fall-through -> let it fail if it does not match
-      return (Integer) evaluated;
-    }
+    return ExpressionParser.evaluateAsInteger(context, this::evaluate);
   }
 
   /**
-   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the result
-   * as {@link Double} data type. {@link Integer} and {@link Float} also get converted to a
-   * {@link Double}.
+   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the
+   * result<br>
+   * For details, see:
+   * {@link ExpressionParser#evaluateAsDouble(Object, java.util.function.Function)}
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result. Never <code>null</code>.
    */
   default Double evaluateAsDouble(C context) {
-    R evaluated = evaluateAsNonNull(context);
-    if (evaluated instanceof String) {
-      return Double.parseDouble((String) evaluated);
-    } else if (evaluated instanceof Integer) {
-      return Double.valueOf((Integer) evaluated);
-    } else if (evaluated instanceof Float) {
-      return ((Float) evaluated).doubleValue();
-    } else {
-      // Fall-through -> let it fail if it does not match
-      return (Double) evaluated;
-    }
+    return ExpressionParser.evaluateAsDouble(context, this::evaluate);
   }
 
   /**
