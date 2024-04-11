@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "develop", "main", "if-else-statement-ast" ]
+    branches: [ "develop", "main" ]
   pull_request:
     branches: [ "develop", "main" ]
   workflow_dispatch:
@@ -27,8 +27,6 @@ jobs:
         java-version: ${{ matrix.java-version }}
         distribution: 'corretto'
         cache: 'maven'
-        overwrite-settings: false
-        settings-path: '${{ github.workspace }}/.github/workflows/'
 
     - name: Build with Maven
       run: mvn -B clean package
