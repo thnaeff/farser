@@ -194,10 +194,14 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   /**
    * Creates a binary node with a left-side and a right-side child node.
    *
-   * @param <X>
-   * @param operator
-   * @param left
-   * @return
+   * @param <X>      A dummy data type for the node evaluation result types to avoid the use of
+   *                 <code>?</code> and the need for (unchecked) casting. In general, it can not
+   *                 programmatically guarantee that one nodes evaluation return type matches the
+   *                 other. It has to rely on runtime (class cast) exceptions when malformed
+   *                 formulas or implementations are used.
+   * @param operator The operator on which to set child nodes
+   * @param left     The node to be used as left-side node
+   * @return The <code>operator</code>, but now updated with a left- and right-side expression.
    */
   private <X> Expression<C, X> binary(NonTerminal<C, X> operator, Expression<C, X> left) {
     // Save the current operator precedence before advancing the token iterator
@@ -266,7 +270,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
         throw new FarserException("Unknown non-terminal type: " + type);
       }
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
-    } else if ((commonType == AstCommonTokenType.LPAREN) || (commonType == AstCommonTokenType.GROUP_START)) {
+    } else if ((commonType == AstCommonTokenType.LPAREN)
+        || (commonType == AstCommonTokenType.GROUP_START)) {
       this.eat(AstCommonTokenType.GROUP_START); // Move iterator if 'GROUP_START'
       this.eat(AstCommonTokenType.LPAREN); // ...or move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);

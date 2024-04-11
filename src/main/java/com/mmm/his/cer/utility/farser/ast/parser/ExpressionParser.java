@@ -1,10 +1,11 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
+import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Some parser tools for {@link Expression#evaluate(Object)} evaluation.
  *
  * @author Thomas Naeff
  *
@@ -86,7 +87,7 @@ public final class ExpressionParser {
           +
           "[fFdD]?))"
           +
-          "[\\x00-\\x20]*");// Optional trailing "whitespace"
+          "[\\x00-\\x20]*"); // Optional trailing "whitespace"
 
   private static final Pattern IS_DOUBLE_OR_FLOAT = Pattern.compile(FP_REGEX);
 
