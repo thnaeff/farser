@@ -2,10 +2,11 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
+import java.util.function.Function;
 
 /**
- * Interface for each node of the AST to implement. This will allow the evaluation of the entire
- * boolean expression through recursion.
+ * Interface for each "terminal" node of the AST to implement. This will allow the evaluation of the
+ * entire expression tree through recursion.
  *
  * @param <C> The type of context to be used for the terminal node execution.
  * @param <R> The data type of the evaluation result
@@ -72,6 +73,23 @@ public interface Expression<C, R> extends Iterable<Expression<C, ?>> {
     } else {
       // Fall-through -> let it fail if it does not match
       return (Double) evaluated;
+    }
+  }
+
+  /**
+   * A little helper to call the evaluation function. This helper wraps the evaluation in a
+   * try-catch for better error reporting on failed expressions.
+   *
+   * @param expression         The node to evaluate
+   * @param evaluationFunction The evaluation function to call on the node
+   * @return The evaluation return data
+   */
+  public static <C, R, E extends Expression<C, R>> R handleEvaluation(E expression,
+      Function<E, R> evaluationFunction) {
+    try {
+      return evaluationFunction.apply(expression);
+    } catch (Exception exc) {
+      throw new FarserException("Failed to evaluate expression: " + expression, exc);
     }
   }
 
