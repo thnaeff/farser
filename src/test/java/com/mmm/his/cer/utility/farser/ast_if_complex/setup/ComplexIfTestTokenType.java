@@ -24,11 +24,11 @@ AstTokenType<ComplexIfTestTokenType> {
   RPAREN(")", AstCommonTokenType.RPAREN),
   NOT("!", AstCommonTokenType.NOT),
 
-  IF("IF", 2, AstCommonTokenType.UNARY),
-  THEN("THEN", 1),
-  ELSE("ELSE", 2),
+  IF("IF", 6, AstCommonTokenType.UNARY),
+  THEN("THEN", 5),
+  ELSE("ELSE", 6),
   // ELSEIF("ELSE IF", 3),
-  ENDIF("ENDIF", 4),
+  ENDIF("ENDIF", 7),
 
   // Operator precedence: Lower value = stronger bond
   GT(">", 1),

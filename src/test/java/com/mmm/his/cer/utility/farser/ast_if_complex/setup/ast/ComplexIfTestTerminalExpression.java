@@ -9,11 +9,11 @@ import com.mmm.his.cer.utility.farser.ast_if_complex.setup.lex.ComplexIfTestToke
  * @author Thomas Naeff
  *
  */
-public class ComplexIfTestTerminalNode implements Expression<ComplexIfTestAstContext, Object> {
+public class ComplexIfTestTerminalExpression implements Expression<ComplexIfTestAstContext, Object> {
 
   private final ComplexIfTestToken token;
 
-  public ComplexIfTestTerminalNode(ComplexIfTestToken token) {
+  public ComplexIfTestTerminalExpression(ComplexIfTestToken token) {
     this.token = token;
   }
 

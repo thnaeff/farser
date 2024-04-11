@@ -18,9 +18,9 @@ public class ComplexIfTestIfOperator<C> extends BooleanNonTerminal<C> {
 
   @Override
   public Boolean evaluate(C context) {
-    // Only the left-side expression is populated, which is the content of the if-statement.
-    // Return the evaluation result of the if-statement.
-    return left.evaluate(context);
+    // Only the left-side node is populated, which is the content of the if-expression.
+    // Return the evaluation result of the if-expression.
+    return Expression.handleEvaluation(left, node -> node.evaluate(context));
   }
 
   @Override

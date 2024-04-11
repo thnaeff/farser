@@ -6,6 +6,7 @@ import com.mmm.his.cer.utility.farser.ast.node.operator.Or;
 import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
+import com.mmm.his.cer.utility.farser.ast.node.type.Statement;
 import com.mmm.his.cer.utility.farser.ast_if_complex.setup.lex.ComplexIfTestToken;
 import com.mmm.his.cer.utility.farser.lexer.FarserException;
 
@@ -14,7 +15,12 @@ implements NodeSupplier<ComplexIfTestToken, ComplexIfTestAstContext> {
 
   @Override
   public Expression<ComplexIfTestAstContext, ?> createNode(final ComplexIfTestToken inToken) {
-    return new ComplexIfTestTerminalNode(inToken);
+    return new ComplexIfTestTerminalExpression(inToken);
+  }
+
+  @Override
+  public Statement<ComplexIfTestAstContext> createStatement(ComplexIfTestToken token) {
+    return new ComplexIfTestTerminalStatement(token);
   }
 
 
