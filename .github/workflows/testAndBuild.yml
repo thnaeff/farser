@@ -2,7 +2,7 @@ name: Maven build
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "develop", "main", "if-else-statement-ast" ]
   pull_request:
     branches: [ "develop", "main" ]
   workflow_dispatch:
