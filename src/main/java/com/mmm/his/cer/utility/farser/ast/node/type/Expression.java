@@ -1,8 +1,7 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
 import com.mmm.his.cer.utility.farser.ast.node.LtrExpressionIterator;
-import com.mmm.his.cer.utility.farser.lexer.FarserException;
-import java.util.function.Function;
+import com.mmm.his.cer.utility.farser.ast.parser.ExpressionParser;
 
 /**
  * Interface for each "terminal" node of the AST to implement. This will allow the evaluation of the
@@ -32,17 +31,44 @@ public interface Expression<C, R> extends Iterable<Expression<C, ?>> {
    */
   default R evaluateAsNonNull(C context) {
     R evaluated = evaluate(context);
-
     if (evaluated == null) {
-      throw new FarserException("The expression evaluation returned NULL. Not allowed.");
+      throw new NullPointerException("The expression evaluation returned NULL. Not allowed.");
     }
-
     return evaluated;
   }
 
   /**
-   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then converts (or casts) the
-   * result to an {@link Integer} data type.
+   * Evaluates the expression and returns the evaluation result converted into its specific type (if
+   * applicable).<br>
+   * If the evaluation return data is a {@link String}, it will do the following:
+   * <ul>
+   * <li>If the string is double-quoted with <code>"</code>, it returns the result as-is as
+   * {@link String}</li>
+   * <li>If the string is an integer, it parses and returns it as {@link Integer}</li>
+   * <li>If the string is a double or float, it parses and returns it as {@link Double}</li>
+   * </ul>
+   *
+   * @param context The context that will be used in the evaluation of the node.
+   * @return The expression result in its specific type. Never <code>null</code>.
+   */
+  default Object evaluateTyped(C context) {
+    R evaluated = evaluateAsNonNull(context);
+    if (evaluated instanceof String) {
+      String str = (String) evaluated;
+      if (str.startsWith("\"") && str.endsWith("\"")) {
+        return str;
+      } else if (ExpressionParser.isInteger(str)) {
+        return Integer.valueOf(str);
+      } else if (ExpressionParser.isDoubleOrFloat(str)) {
+        return Double.valueOf(str);
+      }
+    }
+    return evaluated;
+  }
+
+  /**
+   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the result
+   * as {@link Integer} data type.
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result. Never <code>null</code>.
@@ -58,8 +84,9 @@ public interface Expression<C, R> extends Iterable<Expression<C, ?>> {
   }
 
   /**
-   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then converts (or casts) the
-   * result to a {@link Double} data type.
+   * Evaluates the result using {@link #evaluateAsNonNull(Object)}, then parses or casts the result
+   * as {@link Double} data type. {@link Integer} and {@link Float} also get converted to a
+   * {@link Double}.
    *
    * @param context The context that will be used in the evaluation of the node.
    * @return The expression result. Never <code>null</code>.
@@ -70,26 +97,11 @@ public interface Expression<C, R> extends Iterable<Expression<C, ?>> {
       return Double.parseDouble((String) evaluated);
     } else if (evaluated instanceof Integer) {
       return Double.valueOf((Integer) evaluated);
+    } else if (evaluated instanceof Float) {
+      return ((Float) evaluated).doubleValue();
     } else {
       // Fall-through -> let it fail if it does not match
       return (Double) evaluated;
-    }
-  }
-
-  /**
-   * A little helper to call the evaluation function. This helper wraps the evaluation in a
-   * try-catch for better error reporting on failed expressions.
-   *
-   * @param expression         The node to evaluate
-   * @param evaluationFunction The evaluation function to call on the node
-   * @return The evaluation return data
-   */
-  public static <C, R, E extends Expression<C, R>> R handleEvaluation(E expression,
-      Function<E, R> evaluationFunction) {
-    try {
-      return evaluationFunction.apply(expression);
-    } catch (Exception exc) {
-      throw new FarserException("Failed to evaluate expression: " + expression, exc);
     }
   }
 

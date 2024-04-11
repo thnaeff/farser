@@ -42,10 +42,10 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "THEN",
-        "  IF",
+        "IF",
+        "  IF-THEN",
         "    A",
-        "  B",
+        "    B",
     }));
 
   }
@@ -64,12 +64,12 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "ELSE",
-        "  THEN",
-        "    IF",
+        "IF",
+        "  THEN-ELSE",
+        "    IF-THEN",
         "      A",
-        "    B",
-        "  C",
+        "      B",
+        "    C",
     }));
 
   }
@@ -88,17 +88,17 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "ELSE",
-        "  ELSE",
-        "    THEN",
-        "      IF",
-        "        A",
+        "IF",
+        "  THEN-ELSE",
+        "    IF-THEN",
+        "      A",
         "      B",
-        "    THEN",
-        "      IF",
-        "        C",
-        "      D",
-        "  C",
+        "    IF",
+        "      THEN-ELSE",
+        "        IF-THEN",
+        "          C",
+        "          D",
+        "        C"
     }));
 
   }
@@ -117,14 +117,14 @@ public class ComplexIfTest {
     String printed = AbstractSyntaxTreePrinter.printTree(ast);
     String[] lines = printed.split(System.lineSeparator());
 
-    System.out.println(printed);
+    // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "THEN",
-        "  IF",
+        "IF",
+        "  IF-THEN",
         "    GREATER-THAN",
         "      A",
         "      5",
-        "  B",
+        "    B",
     }));
 
   }

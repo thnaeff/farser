@@ -1,6 +1,5 @@
 package com.mmm.his.cer.utility.farser.ast_if_complex.setup.ast;
 
-import com.mmm.his.cer.utility.farser.ast.node.type.Expression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NonTerminal;
 
 /**
@@ -14,8 +13,7 @@ public class ComplexIfTestLessThanOperator<C> extends NonTerminal<C, Double> {
 
   @Override
   public Boolean evaluate(C context) {
-    return Expression.handleEvaluation(left, node -> node.evaluateAsDouble(context)) < Expression
-        .handleEvaluation(right, node -> node.evaluateAsDouble(context));
+    return left.evaluateAsDouble(context) < right.evaluateAsDouble(context);
   }
 
   @Override

@@ -30,7 +30,7 @@ public enum AstCommonTokenType implements CommonTokenFlag {
   NOT,
 
   /**
-   * An unary operator like "NOT", "IF", etc. with only a left-side expression.
+   * An unary operator like "IF", etc. with only a left-side expression.
    */
   UNARY,
 
@@ -41,8 +41,8 @@ public enum AstCommonTokenType implements CommonTokenFlag {
    * {@link NodeSupplier#createNonTerminalNode(LexerToken)} method being overridden.
    *
    * @deprecated Instead of using this flag, it is preferred to override
-   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} with your custom token
-   *             types.
+   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} and create the node
+   *             instances based on your custom token types.
    */
   @Deprecated
   AND,
@@ -54,8 +54,8 @@ public enum AstCommonTokenType implements CommonTokenFlag {
    * {@link NodeSupplier#createNonTerminalNode(LexerToken)} method being overridden.
    *
    * @deprecated Instead of using this flag, it is preferred to override
-   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} with your custom token
-   *             types.
+   *             {@link NodeSupplier#createNonTerminalNode(LexerToken)} and create the node
+   *             instances based on your custom token types.
    */
   @Deprecated
   OR;

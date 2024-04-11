@@ -20,7 +20,7 @@ public class ComplexIfTestIfOperator<C> extends BooleanNonTerminal<C> {
   public Boolean evaluate(C context) {
     // Only the left-side node is populated, which is the content of the if-expression.
     // Return the evaluation result of the if-expression.
-    return Expression.handleEvaluation(left, node -> node.evaluate(context));
+    return left.evaluate(context);
   }
 
   @Override
