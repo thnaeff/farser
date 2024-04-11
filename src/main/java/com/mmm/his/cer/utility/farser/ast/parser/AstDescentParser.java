@@ -290,10 +290,12 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
         throw new FarserException("Unknown non-terminal type: " + type);
       }
       this.eat(CommonTokenType.ATOM); // Move iterator if 'ATOM'
-    } else if (commonType == AstCommonTokenType.LPAREN) {
-      this.eat(AstCommonTokenType.LPAREN); // Move iterator if 'LPAREN'
+    } else if ((commonType == AstCommonTokenType.LPAREN) || (commonType == AstCommonTokenType.GROUP_START)) {
+      this.eat(AstCommonTokenType.GROUP_START); // Move iterator if 'GROUP_START'
+      this.eat(AstCommonTokenType.LPAREN); // ...or move iterator if 'LPAREN'
       left = this.expression(left, leftOperatorPrecedence);
-      this.eat(AstCommonTokenType.RPAREN); // Move iterator if 'RPAREN'
+      this.eat(AstCommonTokenType.GROUP_END); // Move iterator if 'GROUP_END'
+      this.eat(AstCommonTokenType.RPAREN); // ...or move iterator if 'RPAREN'
     } else if (commonType == AstCommonTokenType.NOT) {
       left = this.not(left, leftOperatorPrecedence);
     } else if (commonType == AstCommonTokenType.UNARY) {

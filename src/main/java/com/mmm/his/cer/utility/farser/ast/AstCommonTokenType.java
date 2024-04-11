@@ -15,13 +15,31 @@ public enum AstCommonTokenType implements CommonTokenFlag {
 
   /**
    * A left parenthesis "(".
+   *
+   * @deprecated Use {@link #GROUP_START} instead.
    */
+  @Deprecated
   LPAREN,
 
   /**
    * A right parenthesis ")".
+   *
+   * @deprecated Use {@link #GROUP_END} instead.
    */
+  @Deprecated
   RPAREN,
+
+  /**
+   * The start of an (expression) group, which will be followed by a {@link #GROUP_END} at some
+   * point. For example an opening parenthesis "(" or an if-block "IF".
+   */
+  GROUP_START,
+
+  /**
+   * The end of an (expression) group, which was preceded by a {@link #GROUP_START} at some point.
+   * For example a closing parenthesis ")" or the end of an if-block "ENDIF".
+   */
+  GROUP_END,
 
   /**
    * A negation/not.

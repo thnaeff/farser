@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
 import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTree;
-import com.mmm.his.cer.utility.farser.ast.AbstractSyntaxTreePrinter;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.AstDescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
@@ -159,7 +158,7 @@ public class ComplexIfEvaluationTest {
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
     AbstractSyntaxTree<ComplexIfTestAstContext> ast = parser.buildTree();
 
-    System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
+    // System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
 
     ExpressionResult<ComplexIfTestAstContext> evaluation = ast.evaluateExpression(
         new ComplexIfTestAstContext(vars -> {
@@ -188,7 +187,7 @@ public class ComplexIfEvaluationTest {
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
     AbstractSyntaxTree<ComplexIfTestAstContext> ast = parser.buildTree();
 
-    System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
+    // System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
 
     ExpressionResult<ComplexIfTestAstContext> evaluation = ast.evaluateExpression(
         new ComplexIfTestAstContext(vars -> {
@@ -203,17 +202,18 @@ public class ComplexIfEvaluationTest {
   }
 
   @Test
-  public void testNestedIf() throws Exception {
+  public void testNestedIfWithEndif_ExecuteNestedIf() throws Exception {
     String input = "IF A = 3 THEN  "
-        + "  IF B > 3 THEN Y " // Nested IF
-        + "ELSE Z";
+        + "  IF B > 3 THEN Y ENDIF" // Nested IF
+        + "ELSE Z"
+        + "ENDIF";
     List<ComplexIfTestToken> tokens = Lexer.lex(ComplexIfTestTokenType.class, input, factory);
 
     AstDescentParser<ComplexIfTestToken, ComplexIfTestTokenType, ComplexIfTestAstContext> parser =
         new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
     AbstractSyntaxTree<ComplexIfTestAstContext> ast = parser.buildTree();
 
-    System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
+    // System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
 
     ExpressionResult<ComplexIfTestAstContext> evaluation = ast.evaluateExpression(
         new ComplexIfTestAstContext(vars -> {
@@ -225,6 +225,34 @@ public class ComplexIfEvaluationTest {
     assertThat(evaluation.isMatched(), is(true));
 
     assertThat(context.evaluatedExpressions, contains("A", "3", "B", "3", "Y"));
+
+  }
+
+
+
+  @Test
+  public void testNestedIfWithEndif_SkipNestedIfAndGoToElse() throws Exception {
+    String input = "IF A = 3 THEN  "
+        + "  IF B > 3 THEN Y ENDIF " // Nested IF
+        + "ELSE Z "
+        + "ENDIF";
+    List<ComplexIfTestToken> tokens = Lexer.lex(ComplexIfTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexIfTestToken, ComplexIfTestTokenType, ComplexIfTestAstContext> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexIfTestAstContext> ast = parser.buildTree();
+
+    // System.out.println(AbstractSyntaxTreePrinter.printTree(ast));
+
+    ExpressionResult<ComplexIfTestAstContext> evaluation = ast.evaluateExpression(
+        new ComplexIfTestAstContext(vars -> {
+          vars.put("A", 4);
+        }));
+    ComplexIfTestAstContext context = evaluation.getContext();
+
+    assertThat(evaluation.isMatched(), is(true));
+
+    assertThat(context.evaluatedExpressions, contains("A", "3", "Z"));
 
   }
 

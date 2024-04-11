@@ -20,15 +20,14 @@ AstTokenType<ComplexIfTestTokenType> {
 
   ATOM(null, CommonTokenType.ATOM),
   SPACE(" ", CommonTokenType.SPACE),
-  LPAREN("(", AstCommonTokenType.LPAREN),
-  RPAREN(")", AstCommonTokenType.RPAREN),
+  LPAREN("(", AstCommonTokenType.GROUP_START),
+  RPAREN(")", AstCommonTokenType.GROUP_END),
   NOT("!", AstCommonTokenType.NOT),
 
-  IF("IF", 6, AstCommonTokenType.UNARY),
+  IF("IF", AstCommonTokenType.GROUP_START),
   THEN("THEN", 5),
   ELSE("ELSE", 6),
-  // ELSEIF("ELSE IF", 3),
-  ENDIF("ENDIF", 7),
+  ENDIF("ENDIF", AstCommonTokenType.GROUP_END),
 
   // Operator precedence: Lower value = stronger bond
   GT(">", 1),

@@ -28,8 +28,6 @@ implements NodeSupplier<ComplexIfTestToken, ComplexIfTestAstContext> {
   public NonTerminal<ComplexIfTestAstContext, ?> createNonTerminalNode(ComplexIfTestToken token) {
 
     switch (token.type) {
-      case IF:
-        return new ComplexIfTestIfOperator<>();
       case THEN:
         return new ComplexIfTestThenOperator<>();
       case ELSE:

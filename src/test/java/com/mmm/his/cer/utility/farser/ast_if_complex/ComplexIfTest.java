@@ -42,10 +42,9 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
-        "  IF-THEN",
-        "    A",
-        "    B",
+        "IF-THEN",
+        "  A",
+        "  B",
     }));
 
   }
@@ -64,12 +63,11 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
-        "  THEN-ELSE",
-        "    IF-THEN",
-        "      A",
-        "      B",
-        "    C",
+        "THEN-ELSE",
+        "  IF-THEN",
+        "    A",
+        "    B",
+        "  C",
     }));
 
   }
@@ -88,22 +86,18 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
+        "THEN-ELSE",
+        "  IF-THEN",
+        "    A",
+        "    B",
         "  THEN-ELSE",
         "    IF-THEN",
-        "      A",
-        "      B",
-        "    IF",
-        "      THEN-ELSE",
-        "        IF-THEN",
-        "          C",
-        "          D",
-        "        C"
+        "      C",
+        "      D",
+        "    C"
     }));
 
   }
-
-
 
   @Test
   public void testIfThen_ComplexFormula() throws Exception {
@@ -119,12 +113,43 @@ public class ComplexIfTest {
 
     // System.out.println(printed);
     assertThat(lines, is(new String[] {
-        "IF",
+        "IF-THEN",
+        "  GREATER-THAN",
+        "    A",
+        "    5",
+        "  B",
+    }));
+
+  }
+
+  @Test
+  public void testNestedIfWithEndif_SkipNestedIfAndGoToElse() throws Exception {
+    String input = "IF A = 3 THEN  "
+        + "  IF B > 3 THEN Y ENDIF " // Nested IF
+        + "ELSE Z "
+        + "ENDIF"; // This 'ENDIF' is optional
+    List<ComplexIfTestToken> tokens = Lexer.lex(ComplexIfTestTokenType.class, input, factory);
+
+    AstDescentParser<ComplexIfTestToken, ComplexIfTestTokenType, ComplexIfTestAstContext> parser =
+        new AstDescentParser<>(tokens.iterator(), defaultNodeSupplier);
+    AbstractSyntaxTree<ComplexIfTestAstContext> ast = parser.buildTree();
+
+    String printed = AbstractSyntaxTreePrinter.printTree(ast);
+    String[] lines = printed.split(System.lineSeparator());
+
+    // System.out.println(printed);
+    assertThat(lines, is(new String[] {
+        "THEN-ELSE",
         "  IF-THEN",
-        "    GREATER-THAN",
+        "    EQUAL",
         "      A",
-        "      5",
-        "    B",
+        "      3",
+        "    IF-THEN",
+        "      GREATER-THAN",
+        "        B",
+        "        3",
+        "      Y",
+        "  Z"
     }));
 
   }
