@@ -257,7 +257,6 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
   private <X> Expression<C, X> factor(Expression<C, X> left, NonTerminalType type,
       int leftOperatorPrecedence) {
     TokenType<?> tokenType = currentToken.getType();
-    // Get common type for generic checking.
     // Ok to return 'null', it is only used in NPE safe logic below.
     CommonTokenFlag commonType = tokenType.getCommonTokenType().orElse(null);
     if (commonType == CommonTokenType.ATOM) {
@@ -298,6 +297,19 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     if (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
     }
+    // Skip all unneeded types
+    eatAll(CommonTokenType.SPACE);
+  }
+
+  /**
+   * Move the iterator forward across any number of tokens of the provided common type.
+   *
+   * @param type the type of the token(s) to eat.
+   */
+  private void eatAll(CommonTokenFlag type) {
+    while (currentToken.getType().isEqual(type) && this.tokenIterator.hasNext()) {
+      currentToken = this.tokenIterator.next();
+    }
   }
 
   /**
@@ -309,6 +321,8 @@ public class AstDescentParser<L extends LexerToken<T>, T extends TokenType<?>, C
     if (this.tokenIterator.hasNext()) {
       currentToken = this.tokenIterator.next();
     }
+    // Skip all unneeded types
+    eatAll(CommonTokenType.SPACE);
   }
 
   /**
