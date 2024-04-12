@@ -34,11 +34,7 @@ public class Lexer {
     Pattern tokenPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
     Matcher tokenMatcher = tokenPattern.matcher(input);
 
-    // Handle optionals of the mandatory token types.
-    // These token types being mandatory is already checked when it creates the token lookup in
-    // TokenTypeLookup. However, that can not just be guaranteed here since that logic happens
-    // somewhere completely different.
-    T atomTokenType = TokenType.getForCommonTypeMandatory(tokenTypeEnumClass, CommonTokenType.ATOM);
+    T atomTokenType = TokenType.getAtomToken(tokenTypeEnumClass);
 
     int pos = 0;
     while (tokenMatcher.find()) {

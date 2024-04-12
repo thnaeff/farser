@@ -3,7 +3,6 @@ package com.mmm.his.cer.utility.farser.lexer;
 import com.mmm.his.cer.utility.farser.CommonTokenFlag;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,10 +21,7 @@ import java.util.regex.Pattern;
 public class TokenTypeLookup {
 
   private static final Map<Class<?>, Map<String, TokenType<?>>> valueLookupMap = new HashMap<>();
-
-  private static final Map<Class<TokenType<?>>, //
-  Map<CommonTokenType, TokenType<?>>> commonTypeLookupMap = new HashMap<>();
-
+  private static final Map<Class<?>, TokenType<?>> atomTokenLookupMap = new HashMap<>();
   private static final Map<Class<TokenType<?>>, Pattern> patternLookupMap = new HashMap<>();
 
   private static final Pattern wordCharPattern = Pattern.compile("\\w");
@@ -112,84 +108,54 @@ public class TokenTypeLookup {
   }
 
   /**
-   * Retrieves the map with {@link CommonTokenType} as keys and the tokens as values.<br />
-   * This map can be used for easier lookup of tokens via {@link CommonTokenType}.<br />
-   * The map is only created once for the given enum class and is retrieved from a cache for
-   * subsequent lookups.
+   * Retrieves the {@link CommonTokenType#ATOM} from the provided enum class. Lookups are cached.
    *
-   * @param enumClass The token enumeration class
-   * @return An unmodifiable map with all the lookup entries
-   * @throws IllegalArgumentException If the token type class is not an enumeration
-   * @throws FarserException          If there are duplicate keys based on the
-   *                                  {@link CommonTokenType}s or if mandatory
-   *                                  {@link CommonTokenType} do not exist.
+   * @param <T>       The token type
+   * @param enumClass The enum class which
+   * @return The atom token. Never <code>null</code>.
+   * @throws IllegalArgumentException If the class is not an enum
+   * @throws FarserException          If none or multiple {@link CommonTokenType#ATOM} are defined
+   *                                  in the enum and not just a single one
    */
-  protected static <T extends TokenType<?>> Map<CommonTokenType, T> getCommonTypeLookupMap(
-      Class<T> enumClass) {
+  protected static <T extends TokenType<?>> T getAtomToken(Class<T> enumClass) {
 
     if (!enumClass.isEnum()) {
       throw new IllegalArgumentException(enumClass.getName() + " has to be an enumeration");
     }
 
-    // If lookup already exists just do the lookup.
-    if (commonTypeLookupMap.containsKey(enumClass)) {
+    if (atomTokenLookupMap.containsKey(enumClass)) {
       // Safe to suppress. Map is created in this method for the given enum class.
       @SuppressWarnings("unchecked")
-      Map<CommonTokenType, T> lookupMap =
-      (Map<CommonTokenType, T>) commonTypeLookupMap.get(enumClass);
-      return lookupMap;
+      T tmpToken = (T) atomTokenLookupMap.get(enumClass);
+      return tmpToken;
     }
 
-    // Check that all mandatory common types are used
-    validateCommonTypeLookupMap(enumClass);
-
-    // Build lookup map
-    Map<CommonTokenType, T> lookupMap = buildCommonTypeLookupMap(enumClass);
-
-    // Save to cast. Lookup happens above.
-    @SuppressWarnings("unchecked")
-    Map<CommonTokenType, TokenType<?>> lookupMapTmp =
-    (Map<CommonTokenType, TokenType<?>>) lookupMap;
-
-    // Save to cast. Lookup happens above.
-    @SuppressWarnings("unchecked")
-    Class<TokenType<?>> enumClassTmp = (Class<TokenType<?>>) enumClass;
-
-    // Store as unmodifiable map because it should never change again.
-    commonTypeLookupMap.put(enumClassTmp, Collections.unmodifiableMap(lookupMapTmp));
-    return lookupMap;
-  }
-
-  /**
-   * Creates the map for token lookups via {@link CommonTokenType}.
-   *
-   * @param enumClass The {@link TokenType} enumeration class
-   * @return The map with the values and tokens of the given enumeration class
-   */
-  private static <T extends TokenType<?>> Map<CommonTokenType, T> buildCommonTypeLookupMap(
-      Class<T> enumClass) {
-    // Build lookup map
-    Map<CommonTokenType, T> lookupMap = new EnumMap<>(CommonTokenType.class);
-    for (T enumConst : enumClass.getEnumConstants()) {
-      Optional<CommonTokenFlag> commonType = enumConst.getCommonTokenType();
-      if (commonType.isPresent() && (commonType.get() instanceof CommonTokenType)) {
-        CommonTokenType key = (CommonTokenType) commonType.get();
-        if (lookupMap.containsKey(key)) {
-          throw new FarserException(
-              "Duplicate keys are not allowed. Key '"
-                  + key
-                  + "' alredy exists for "
-                  + lookupMap.get(key).getClass().getName()
-                  + "."
-                  + enumConst.name());
+    // Create the cache and validate occurrences
+    T atomToken = null;
+    for (T token : enumClass.getEnumConstants()) {
+      if (token.isEqual(CommonTokenType.ATOM)) {
+        if (!atomTokenLookupMap.containsKey(enumClass)) {
+          atomToken = token;
+          atomTokenLookupMap.put(enumClass, token);
+        } else {
+          throw new FarserException("More than one token is marked as common type "
+              + CommonTokenType.ATOM
+              + " in "
+              + enumClass);
         }
-        lookupMap.put(key, enumConst);
       }
     }
 
-    return lookupMap;
-  }
+    if (atomToken == null) {
+      throw new FarserException("No common type "
+          + CommonTokenType.ATOM
+          + " found in "
+          + enumClass
+          + ". This type is mandatory.");
+    }
 
+    return atomToken;
+  }
 
   /**
    * Creates the map for token lookups via {@link CommonTokenType}.

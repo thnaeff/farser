@@ -70,50 +70,16 @@ public interface TokenType<T extends Enum<T>> {
   }
 
   /**
-   * Retrieves the token which is marked with the given {@link CommonTokenType}.
+   * Retrieves the token which is marked with {@link CommonTokenType#ATOM}.
    *
    * @param tokenTypeClass The enumeration class with the tokens
-   * @param commonType     The {@link CommonTokenType} to look for
-   * @return The token
+   * @return The token. Never <code>null</code>.
    * @throws IllegalArgumentException If the token type class is not an enumeration
+   * @throws FarserException          If the ATOM token setup is invalid
    */
-  static <T extends TokenType<?>> Optional<T> getForCommonType(Class<T> tokenTypeClass,
-      CommonTokenType commonType) {
-
-    // Build lookup map or retrieve cached lookup map
-    Map<CommonTokenType, T> lookup = TokenTypeLookup.getCommonTypeLookupMap(tokenTypeClass);
-
-    if (!lookup.containsKey(commonType)) {
-      return Optional.empty();
-    } else {
-      return Optional.ofNullable(lookup.get(commonType));
-    }
-  }
-
-  /**
-   * Retrieves the token which is marked with the given {@link CommonTokenType}. Throws an exception
-   * if no such entry with that common token type exists.
-   *
-   * @param tokenTypeClass The enumeration class with the tokens
-   * @param commonType     The {@link CommonTokenType} to look for
-   * @return The token
-   * @throws IllegalArgumentException If the token type class is not an enumeration, or if the token
-   *                                  type class does not contain the provided common token type
-   *                                  entry.
-   */
-  static <T extends TokenType<?>> T getForCommonTypeMandatory(Class<T> tokenTypeClass,
-      CommonTokenType commonType) {
-    Optional<T> tokenTypeTmp = getForCommonType(tokenTypeClass, commonType);
-    if (!tokenTypeTmp.isPresent()) {
-      // Having the provided token type is mandatory
-      throw new IllegalArgumentException("No implementation with "
-          + commonType.getClass().getSimpleName()
-          + "."
-          + commonType.name()
-          + " found in "
-          + tokenTypeClass.getSimpleName());
-    }
-    return tokenTypeTmp.get();
+  static <T extends TokenType<?>> T getAtomToken(Class<T> tokenTypeClass) {
+    // Build lookup or retrieve cached lookup
+    return TokenTypeLookup.getAtomToken(tokenTypeClass);
   }
 
   /**
@@ -126,15 +92,9 @@ public interface TokenType<T extends Enum<T>> {
    */
   static <T extends TokenType<?>> Optional<T> getForValue(Class<T> tokenTypeClass,
       String value) {
-
     // Build lookup map or retrieve cached lookup map
     Map<String, T> lookup = TokenTypeLookup.getValueLookupMap(tokenTypeClass);
-
-    if (!lookup.containsKey(value)) {
-      return Optional.empty();
-    } else {
-      return Optional.ofNullable(lookup.get(value));
-    }
+    return !lookup.containsKey(value) ? Optional.empty() : Optional.ofNullable(lookup.get(value));
   }
 
   /**
@@ -145,12 +105,10 @@ public interface TokenType<T extends Enum<T>> {
    * @throws IllegalArgumentException If the token type class is not an enumeration
    */
   static <T extends TokenType<?>> T[] values(Class<T> tokenTypeClass) {
-
     if (!tokenTypeClass.isEnum()) {
       throw new IllegalArgumentException(tokenTypeClass.getName()
           + " has to be an enumeration");
     }
-
     return tokenTypeClass.getEnumConstants();
   }
 
@@ -168,6 +126,5 @@ public interface TokenType<T extends Enum<T>> {
     // Build pattern or retrieve cached pattern
     return TokenTypeLookup.getPattern(enumClass);
   }
-
 
 }
