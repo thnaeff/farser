@@ -29,29 +29,28 @@ public class Lexer {
    * @return List of {@link LexerToken} that were created from the input string.
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<L>
-      lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
+  lex(Class<T> tokenTypeEnumClass, String input, LexerTokenFactory<L, T> factory) {
     List<L> result = new ArrayList<>();
-    Pattern delimiterPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
-    Matcher delimiterMatcher = delimiterPattern.matcher(input);
+    Pattern tokenPattern = TokenType.createTokenPattern(tokenTypeEnumClass);
+    Matcher tokenMatcher = tokenPattern.matcher(input);
 
     // Handle optionals of the mandatory token types.
     // These token types being mandatory is already checked when it creates the token lookup in
     // TokenTypeLookup. However, that can not just be guaranteed here since that logic happens
     // somewhere completely different.
     T atomTokenType = TokenType.getForCommonTypeMandatory(tokenTypeEnumClass, CommonTokenType.ATOM);
-    T spaceTokenType =
-        TokenType.getForCommonTypeMandatory(tokenTypeEnumClass, CommonTokenType.SPACE);
-    Optional<T> spaceTokenTypeTmp = Optional.of(spaceTokenType);
 
     int pos = 0;
-    while (delimiterMatcher.find()) {
-      lexAtom(input, pos, delimiterMatcher.start(), atomTokenType, factory, result::add);
+    while (tokenMatcher.find()) {
+      // The ATOM is everything in between a known token type
+      lexAtom(input, pos, tokenMatcher.start(), atomTokenType, factory, result::add);
 
-      String delimiter = delimiterMatcher.group();
-      lexDelimiter(delimiter, spaceTokenTypeTmp, tokenTypeEnumClass, factory, result::add);
+      // Everything in between two ATOMs should be a known token type
+      String knownToken = tokenMatcher.group();
+      lexKnownTokenType(knownToken, tokenTypeEnumClass, factory, result::add);
 
-      // Remember end of delimiter
-      pos = delimiterMatcher.end();
+      // Remember end of known token
+      pos = tokenMatcher.end();
     }
 
     lexRemaining(input, pos, atomTokenType, factory, result::add);
@@ -93,35 +92,35 @@ public class Lexer {
   /**
    * Collects any known "delimiter" (a known token type, other than {@link CommonTokenType#ATOM}).
    *
-   * @param delimiter          The delimiter to lex
+   * @param knownToken         The delimiter to lex
    * @param spaceTokenType     The custom user token type which is marked as
    *                           {@link CommonTokenType#SPACE}
    * @param tokenTypeEnumClass The enumeration class which defines all the tokens
    * @param factory            The token factory
    * @param result             The consumer which processes the result (if there is a result)
    */
-  private static <L extends LexerToken<T>, T extends TokenType<?>> void lexDelimiter(
-      String delimiter, Optional<T> spaceTokenType, Class<T> tokenTypeEnumClass,
-      LexerTokenFactory<L, T> factory, Consumer<L> result) {
-    Optional<T> delimiterTokenType;
+  private static <L extends LexerToken<T>, T extends TokenType<?>> void lexKnownTokenType(
+      String knownToken, Class<T> tokenTypeEnumClass, LexerTokenFactory<L, T> factory,
+      Consumer<L> result) {
 
-    if (delimiter.trim().isEmpty()) {
-      // Handle special SPACE token
-      delimiterTokenType = spaceTokenType;
-    } else {
-      delimiterTokenType = TokenType.getForValue(tokenTypeEnumClass, delimiter);
+    // First, look up the token as-is.
+    Optional<T> knownTokenType = TokenType.getForValue(tokenTypeEnumClass, knownToken);
+    // If the token does not exist as-is, then look it up as trimmed separator.
+    if (!knownTokenType.isPresent()) {
+      String knownTokenTrimmed = TokenTypeLookup.trimSeparatorToken(knownToken);
+      knownTokenType = TokenType.getForValue(tokenTypeEnumClass, knownTokenTrimmed);
     }
 
-    if (delimiterTokenType.isPresent()) {
-      L atomToken = factory.create(delimiterTokenType.get(), delimiter);
+    if (knownTokenType.isPresent()) {
+      L atomToken = factory.create(knownTokenType.get(), knownToken);
       if (atomToken != null) {
         result.accept(atomToken);
       }
     } else {
       // This should never happen. The regex should hit all tokens which exist in the token type
       // enum.
-      throw new FarserException("No match found for delimiter '"
-          + delimiter
+      throw new FarserException("No match found for token '"
+          + knownToken
           + "'. No such token type seems to exist in "
           + tokenTypeEnumClass.getSimpleName());
     }
@@ -159,7 +158,7 @@ public class Lexer {
    * @return List of strings that only contain values
    */
   public static <L extends LexerToken<T>, T extends TokenType<?>> List<String>
-      getTokens(List<L> tokens, T forTokenType) {
+  getTokens(List<L> tokens, T forTokenType) {
     return tokens.stream()
         .filter(token -> token.getType() == forTokenType)
         .map(LexerToken::getValue)
